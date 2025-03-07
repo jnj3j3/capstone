@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    image: mysql:8.0
+    restart: unless-stopped
+    container_name: ticketing-db
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    volumes:
+      - db:/var/lib/mysql
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # app:
+  #   container_name: backend-app-1
+  #   depends_on:
+  #     - mysqldb
+  #     - redis_container
+  #   build: ./app
+  #   restart: unless-stopped
+  #   env_file: ./.env
+  #   ports:
+  #     - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+  #   environment:
+  #     - DB_HOST=mysqldb
+  #     - DB_USER=$MYSQLDB_USER
+  #     - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+  #     - DB_NAME=$MYSQLDB_DATABASE
+  #     - DB_PORT=$MYSQLDB_DOCKER_PORT
+  #     - REDIS_HOST= redis_container
+  #   stdin_open: true
+  #   tty: true
+  #   logging:
+  #     options:
+  #       max-size: "10m"
+  #       max-file: "3"
+volumes: 
+  db:
+
