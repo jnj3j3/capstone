@@ -17,7 +17,15 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-
+  front:
+    build:
+      context: "./front"
+      dockerfile: Dockerfile
+    container_name: front
+    env_file: ./.env
+    ports:
+      - $FRONT_DOCKER_PORT:$FRONT_LOCAL_PORT
+    
   # app:
   #   container_name: backend-app-1
   #   depends_on:
