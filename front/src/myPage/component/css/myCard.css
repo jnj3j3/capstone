@@ -1,0 +1,47 @@
+.cardMain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 60px;
+  padding-bottom: 300px;
+  width: 100%;
+}
+
+.card {
+  width: 500px;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ card-body 크기 조정 */
+.card-body.cardBodyInfo {
+  flex: 0 0 auto; /* 기본 크기만 차지 */
+  padding: 10px;
+}
+
+/* ✅ list-group 크기 확장 */
+.list-group.listGroupInfo {
+  flex: 1 1 auto; /* 남는 공간 차지 */
+}
+
+/* ✅ ticket 카드 크기 조정 */
+.ticketCard {
+  width: 100%;
+  height: auto;
+}
+
+/* ✅ ticket 카드 내부 크기 조정 */
+.ticketCardBody {
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* ✅ text 크기 조정 */
+.card-text.cardTextInfo {
+  font-size: 12px;
+  color: #555;
+}
+.mySwiper.ticketWallet {
+  width: 60%;
+}

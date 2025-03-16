@@ -1,27 +1,16 @@
 import React, { useState } from "react";
 import "./css/rankingSection.css";
-import image from "../images/image.png"; // 테스트용 이미지
-
+import Ticket from "../../public/class/ticketClass";
+import img from "../../public/images/image.png";
 const periods = ["일간", "주간", "월간", "연간"];
 
-const rankingData = [
-  { rank: 1, title: "뮤지컬 <모리스>", date: "2025.03.07 - 2025.05.25", image },
-  { rank: 2, title: "뮤지컬 <배니싱>", date: "2025.02.04 - 2025.05.25", image },
-  { rank: 3, title: "뮤지컬 <폴>", date: "2025.02.07 - 2025.03.30", image },
-  {
-    rank: 4,
-    title: "뮤지컬 <미아 파밀리아>",
-    date: "2024.12.19 - 2025.03.23",
-    image,
-  },
-  {
-    rank: 5,
-    title: "뮤지컬 <퍼스트 맨>",
-    date: "2025.01.10 - 2025.03.30",
-    image,
-  },
+const ticketList = [
+  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
+  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
+  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
+  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
+  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
 ];
-
 const RankingSection = () => {
   const [selectedCategory, setSelectedCategory] = useState("뮤지컬");
   const [selectedPeriod, setSelectedPeriod] = useState("일간");
@@ -33,14 +22,14 @@ const RankingSection = () => {
       </div>
       {/* 랭킹 슬라이더 */}
       <div className="ranking-slider">
-        {rankingData.map((show) => (
+        {ticketList.map((show, idx) => (
           <div className="ranking-card">
             <div className="image-container">
-              <img src={show.image} alt={show.title} />
-              <span className="rank-number">{show.rank}</span>
+              <img src={show.img} alt={show.name} />
+              <span className="rank-number">{idx + 1}</span>
             </div>
-            <h3 className="rank-explain">{show.title}</h3>
-            <p className="rank-explain">{show.date}</p>
+            <h3 className="rank-explain">{show.name}</h3>
+            <p className="rank-explain">{show.time}</p>
           </div>
         ))}
       </div>
