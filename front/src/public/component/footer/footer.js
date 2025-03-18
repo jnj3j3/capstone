@@ -1,7 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./footer.css";
 const Footer = () => {
   return (
-    <footer class="py-5 bg-dark fixed-bottom">
+    <footer class="py-5 bg-dark footer">
       <div class="container">
         <p class="m-0 text-start text-white">
           creater: 소프트웨어학과 2020575063 주병규
