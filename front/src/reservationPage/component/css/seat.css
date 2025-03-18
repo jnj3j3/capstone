@@ -1,0 +1,103 @@
+.seat-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.seat-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.row-label {
+  width: 20px;
+  font-weight: bold;
+}
+
+.seat {
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.seat.selected {
+  background-color: blue;
+  color: white;
+}
+
+.seat.reserved {
+  background-color: gray;
+  color: white;
+  cursor: not-allowed;
+}
+
+.seat-info {
+  width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.confirm-button {
+  width: 100%;
+  padding: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.confirm-button:disabled {
+  background-color: lightgray;
+  cursor: not-allowed;
+}
+.seatMain {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 80px; /* reservationBanner와 seatBody 간 간격 조정 */
+  padding-bottom: 300px;
+  position: relative;
+  border-bottom-width: thin;
+}
+
+.row.seatBody {
+  width: 80%;
+}
+
+.seat.reserved.screen {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.reservationBanner {
+  position: absolute;
+  top: 10px; /* 원하는 위치로 조정 */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+.seat-width {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+}

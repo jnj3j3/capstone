@@ -1,0 +1,10 @@
+.content {
+  flex: 1; /* 메인 컨텐츠가 남는 공간을 채우도록 */
+}
+
+.footer {
+  background-color: #343a40;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}

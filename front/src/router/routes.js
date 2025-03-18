@@ -3,6 +3,7 @@ import MainPage from "../mainPage/mainPage";
 import DefaultLayout from "./defaultLayout";
 import MyPage from "../myPage/myPage";
 import SearchPage from "../searchPage/searchPage";
+import ReservationPage from "../reservationPage/reservationPage";
 const router = createBrowserRouter([
   {
     element: <DefaultLayout />,
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
+      },
+      {
+        path: "/reservation",
+        element: <ReservationPage />,
       },
     ],
   },
