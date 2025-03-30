@@ -13,9 +13,7 @@
       "description": "test routes"
     }
   ],
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/test/test1": {
       "get": {
@@ -30,6 +28,51 @@
         }
       }
     },
+    "/ticket/createTicket": {
+      "post": {
+        "description": "Create a new ticket with file upload",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string",
+            "description": "Authorization token",
+            "required": true
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "type": "string",
+            "description": "The name of the event",
+            "required": true
+          },
+          {
+            "name": "context",
+            "in": "formData",
+            "type": "string",
+            "description": "The description of the event",
+            "required": true
+          },
+          {
+            "name": "image",
+            "in": "formData",
+            "type": "file",
+            "description": "The image for the event",
+            "required": true
+          }
+        ],
+        "consumes": ["multipart/form-data"],
+        "responses": {
+          "200": {
+            "description": "Ticket created successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+
     "/user/createUser": {
       "post": {
         "description": "",
@@ -59,9 +102,7 @@
     },
     "/user/login": {
       "post": {
-        "tags": [
-          "user"
-        ],
+        "tags": ["user"],
         "description": "",
         "parameters": [
           {
@@ -89,9 +130,6 @@
     },
     "/user/deleteUser": {
       "delete": {
-        "tags": [
-          "user"
-        ],
         "description": "",
         "parameters": [
           {

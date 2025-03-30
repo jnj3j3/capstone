@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const testRouter_1 = require("./routes/testRouter");
 const models_1 = require("./models");
 const userRouter_1 = require("./routes/userRouter");
+const ticketRouter_1 = require("./routes/ticketRouter");
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swaggerJson");
 const app = (0, express_1.default)();
@@ -24,6 +25,7 @@ models_1.db.sequelize
 });
 app.use("", testRouter_1.testRouter);
 app.use("", userRouter_1.userRouter);
+app.use("", ticketRouter_1.ticketRouter);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.listen(PORT, () => {
     return console.log(`Express is listening at http://localhost:${PORT}`);
