@@ -80,8 +80,7 @@ function authMiddleware(req, res, next) {
     if (!data || data.exp < Date.now()) {
         return res.status(401).json({ error: "Token expired" });
     }
-    req.body.id = data.id;
-    req.body.name = data.name;
+    req.user = { id: data.id, name: data.name };
     next();
 }
 //# sourceMappingURL=authToken.js.map

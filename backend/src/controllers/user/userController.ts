@@ -72,7 +72,7 @@ export function login(req: Request, res: Response) {
 export async function deleteUser(req: Request, res: Response) {
   const transaction = await sequelize.transaction();
   try {
-    const id = req.body.id;
+    const id = (req as any).user?.id;
     const password = userFunc.encryption(req.body.password);
     const userUpdateData = await User.update(
       { state: 0 },
@@ -95,7 +95,7 @@ export async function deleteUser(req: Request, res: Response) {
 }
 
 export function checkJwt(req: Request, res: Response) {
-  const id = req.body.id;
+  const id = (req as any).user?.id;
   const name = req.body.name;
   if (Boolean(id) && Boolean(name)) {
     const Obj = {
