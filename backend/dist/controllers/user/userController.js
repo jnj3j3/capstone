@@ -111,9 +111,10 @@ function login(req, res) {
 }
 function deleteUser(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         const transaction = yield sequelize.transaction();
         try {
-            const id = req.body.id;
+            const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
             const password = userFunc.encryption(req.body.password);
             const userUpdateData = yield User.update({ state: 0 }, {
                 where: { id: id, password: password, state: 1 },
@@ -135,7 +136,8 @@ function deleteUser(req, res) {
     });
 }
 function checkJwt(req, res) {
-    const id = req.body.id;
+    var _a;
+    const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
     const name = req.body.name;
     if (Boolean(id) && Boolean(name)) {
         const Obj = {

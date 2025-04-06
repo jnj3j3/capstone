@@ -58,8 +58,13 @@ Ticket.init(
   }
 );
 
-export interface TicketReq {
+export interface TicketBody {
   userId: number;
+  name: string;
+  context: string;
+  image: Buffer;
+}
+export interface TicketReq {
   name: string;
   context: string;
   image: Buffer;

@@ -13,8 +13,74 @@
       "description": "test routes"
     }
   ],
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
+    "/reserve/reserveTicket/{ticketId}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "seatNumber": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/reserve/cancelReserve/{reserveId}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "reserveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/test/test1": {
       "get": {
         "description": "",
@@ -30,41 +96,35 @@
     },
     "/ticket/createTicket": {
       "post": {
-        "description": "Create a new ticket with file upload",
+        "description": "",
         "parameters": [
           {
             "name": "authorization",
             "in": "header",
-            "type": "string",
-            "description": "Authorization token",
-            "required": true
+            "type": "string"
           },
           {
-            "name": "name",
-            "in": "formData",
-            "type": "string",
-            "description": "The name of the event",
-            "required": true
-          },
-          {
-            "name": "context",
-            "in": "formData",
-            "type": "string",
-            "description": "The description of the event",
-            "required": true
-          },
-          {
-            "name": "image",
-            "in": "formData",
-            "type": "file",
-            "description": "The image for the event",
-            "required": true
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "context": {
+                  "example": "any"
+                },
+                "seatRows": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
-        "consumes": ["multipart/form-data"],
         "responses": {
           "200": {
-            "description": "Ticket created successfully"
+            "description": "OK"
           },
           "401": {
             "description": "Unauthorized"
@@ -72,7 +132,74 @@
         }
       }
     },
-
+    "/ticket/pageNationg/{page}/{limit}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ticket/deleteTicket/{ticketId}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/ticket/getTicket/{ticketId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/user/createUser": {
       "post": {
         "description": "",
@@ -102,7 +229,9 @@
     },
     "/user/login": {
       "post": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "description": "",
         "parameters": [
           {
@@ -143,12 +272,6 @@
             "schema": {
               "type": "object",
               "properties": {
-                "id": {
-                  "example": "any"
-                },
-                "name": {
-                  "example": "any"
-                },
                 "password": {
                   "example": "any"
                 }
