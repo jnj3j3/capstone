@@ -9,6 +9,8 @@ exports.accessTokenDecrypt = accessTokenDecrypt;
 exports.refreshTokenDecrypt = refreshTokenDecrypt;
 exports.authMiddleware = authMiddleware;
 const crypto_1 = __importDefault(require("crypto"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const accesAlgorithm = process.env.AC_ALGORITHM;
 const refreshAlgorithm = process.env.RE_ALGORITHM;
 const reKey = process.env.RE_ENC_KEY;
@@ -16,6 +18,8 @@ const reIv = process.env.RE_ENC_IV;
 const key = process.env.ENC_KEY; // 32바이트 키
 const iv = process.env.ENC_IV;
 //accessToken 생성
+//redis를 이 function을 만든 후 적용하여서 redis를 사용하지 않고 front쪽에 권환을 많이주는 형태로 만들게 됨
+//나중에 리팩토링을 하게되면 redis를 사용하여서 accessToken을 관리하는 형태로 바꿔야함 (refreshToken도 마찬가지지)
 function createAccessToken(user) {
     try {
         const payload = {

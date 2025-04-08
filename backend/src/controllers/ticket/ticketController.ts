@@ -20,6 +20,8 @@ export async function createTicket(req: Request, res: Response) {
       name: body.name,
       context: body.context,
       image: req.file?.buffer,
+      startDate: body.startDate,
+      endDate: body.endDate,
     };
     const createdTicket = await Ticket.create(ticket, { transaction }).catch(
       (err) => {
@@ -109,6 +111,11 @@ export function pageNationg(req: Request, res: Response) {
         limit: limit,
         offset: offset,
         order: [["created", "DESC"]],
+        where: {
+          endDate: {
+            [seq.Op.gte]: new Date(),
+          },
+        },
       })
         .then((data) => {
           if (data.count == 0) {
@@ -124,9 +131,18 @@ export function pageNationg(req: Request, res: Response) {
         });
     } else {
       Ticket.findAndCountAll({
-        where: seq.Sequelize.literal(
-          `MATCH(name, content) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`
-        ),
+        where: {
+          [seq.Op.and]: [
+            seq.Sequelize.literal(
+              `MATCH(name, content) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`
+            ),
+            {
+              endDate: {
+                [seq.Op.gte]: new Date(),
+              },
+            },
+          ],
+        },
         //여기서 with query expansion으로 어느정도의 자연어 처리를 해주지만 허점이 많음음
         limit: limit,
         offset: offset,

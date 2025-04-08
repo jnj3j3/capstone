@@ -15,4 +15,8 @@ exports.db = {
     Reserve: Reserver_1.Reserve,
     TicketSeat: TicketSeat_1.TicketSeat,
 };
+Reserver_1.Reserve.belongsTo(TicketSeat_1.TicketSeat, { foreignKey: "seatId" });
+Reserver_1.Reserve.belongsTo(User_1.User, { foreignKey: "userId" });
+TicketSeat_1.TicketSeat.belongsTo(Ticket_1.Ticket, { foreignKey: "ticketId" });
+Ticket_1.Ticket.belongsTo(TicketSeat_1.TicketSeat, { foreignKey: "userId" });
 //# sourceMappingURL=index.js.map

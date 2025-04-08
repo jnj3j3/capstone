@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reserveTicket = reserveTicket;
 exports.cancelReserve = cancelReserve;
+exports.getReserveList = getReserveList;
 const index_1 = require("../../models/index");
 const err_config_1 = require("../../config/err.config");
 const ticketSeatFunction_1 = require("../ticketSeat/ticketSeatFunction");
@@ -78,6 +79,40 @@ function cancelReserve(req, res) {
         catch (err) {
             yield transaction.rollback();
             return (0, err_config_1.errConfig)(res, err, "this error occurred while cancelling the reserve");
+        }
+    });
+}
+function getReserveList(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        try {
+            const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+            const reserves = yield index_1.db.Reserve.findAll({
+                where: {
+                    userId: userId,
+                    state: "completed",
+                },
+                include: [
+                    {
+                        model: index_1.db.TicketSeat,
+                        as: "ticketSeat",
+                        attributes: ["seatNumber", "updated"],
+                        include: [
+                            {
+                                model: index_1.db.Ticket,
+                                as: "ticket",
+                                attributes: ["name", "startDate", "endDate", "image"],
+                            },
+                        ],
+                    },
+                ],
+            });
+            res.send(reserves.map((reserve) => {
+                reserve.dataValues;
+            }));
+        }
+        catch (err) {
+            return (0, err_config_1.errConfig)(res, err, "this error occurred while getting reserve list");
         }
     });
 }

@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   mysqldb:
@@ -36,6 +36,8 @@ services:
     env_file: ./.env
     ports:
       - $BACK_LOCAL_PORT:$BACK_DOCKER_PORT
+    volumes:
+      - ./backend/.env:/dist/.env
     environment:
       - DB_HOST=mysqldb
       - DB_USER=$MYSQLDB_USER
@@ -48,6 +50,24 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-volumes: 
+  redis:
+    image: "redis:latest"
+    container_name: redis
+    restart: always
+    ports:
+      - $REDIS_LOCAL_PORT:$REDIS_DOCKER_PORT
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
+    env_file:
+      - ./.env
+    labels:
+      - "name-=redis"
+      - "mode=standalone"
+    command: redis-server /usr/local/etc/redis/redis.conf
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+volumes:
   db:
-

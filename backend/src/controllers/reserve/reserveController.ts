@@ -83,3 +83,40 @@ export async function cancelReserve(req: Request, res: Response) {
     );
   }
 }
+
+export async function getReserveList(req: Request, res: Response) {
+  try {
+    const userId = (req as any).user?.id;
+    const reserves = await db.Reserve.findAll({
+      where: {
+        userId: userId,
+        state: "completed",
+      },
+      include: [
+        {
+          model: db.TicketSeat,
+          as: "ticketSeat",
+          attributes: ["seatNumber", "updated"],
+          include: [
+            {
+              model: db.Ticket,
+              as: "ticket",
+              attributes: ["name", "startDate", "endDate", "image"],
+            },
+          ],
+        },
+      ],
+    });
+    res.send(
+      reserves.map((reserve) => {
+        reserve.dataValues;
+      })
+    );
+  } catch (err) {
+    return errConfig(
+      res,
+      err,
+      "this error occurred while getting reserve list"
+    );
+  }
+}

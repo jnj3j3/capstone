@@ -30,6 +30,12 @@ Ticket.init({
             key: "id",
         },
     },
+    startDate: {
+        type: db_config_1.seq.DATE,
+    },
+    endDate: {
+        type: db_config_1.seq.DATE,
+    },
 }, {
     modelName: "Ticket",
     tableName: "Ticket",

@@ -7,6 +7,8 @@ interface TicketAttributes {
   created: Date;
   image: Buffer;
   userId: number;
+  startDate: Date;
+  endDate: Date;
 }
 
 export class Ticket
@@ -20,6 +22,8 @@ export class Ticket
   public context!: string;
   public image: Buffer;
   public userId!: number;
+  public startDate!: Date;
+  public endDate!: Date;
 }
 
 Ticket.init(
@@ -48,6 +52,12 @@ Ticket.init(
         key: "id",
       },
     },
+    startDate: {
+      type: seq.DATE,
+    },
+    endDate: {
+      type: seq.DATE,
+    },
   },
   {
     modelName: "Ticket",
@@ -63,9 +73,13 @@ export interface TicketBody {
   name: string;
   context: string;
   image: Buffer;
+  startDate: Date;
+  endDate: Date;
 }
 export interface TicketReq {
   name: string;
   context: string;
   image: Buffer;
+  startDate: Date;
+  endDate: Date;
 }
