@@ -45,7 +45,7 @@ export async function createTicket(req: Request, res: Response) {
       }
     }
     await transaction.commit();
-    res.send("success");
+    return res.send("success");
   } catch (err) {
     await transaction.rollback();
     return errConfig(res, err, "this error occured while createTicket");
@@ -63,9 +63,7 @@ export async function deleteTicket(req: Request, res: Response) {
       lock: transaction.LOCK.UPDATE,
       transaction: transaction,
     });
-    if (!ticket) {
-      return res.send("Ticket not found");
-    }
+    if (!ticket) throw new Error("Ticket not found");
     Ticket.destroy({
       where: {
         id: ticketId,

@@ -5,19 +5,26 @@ import {
   findTicketSeatForUpdate,
   findTicketSeatForCancel,
 } from "../ticketSeat/ticketSeatFunction";
+import { getQueueRank } from "../../utils/redis/redisUtils";
 export async function reserveTicket(req: Request, res: Response) {
   const transaction = await db.sequelize.transaction();
   try {
-    const ticketId = parseInt(req.params.ticketId);
+    const ticketId = req.params.ticketId;
     const seatNumber = req.body.seatNumber;
-    const userId = (req as any).user?.id;
+    const userId = (req as any).user?.id.toString();
+    console.log(typeof ticketId, typeof userId);
+    const rank = await getQueueRank(ticketId, userId);
+
+    if (rank == null || rank >= 10) {
+      return res
+        .status(403)
+        .json({ allowed: false, message: "Still in queue" });
+    }
     const ticketSeat = await findTicketSeatForUpdate(
-      ticketId,
+      parseInt(ticketId),
       seatNumber,
       transaction
-    ).catch((err) => {
-      throw new Error(err);
-    });
+    );
     // 결제시스템이 없음으로 reserve의 state를 바로 reserved로 바꿔주었다.
     // 이후 결제 시스템을 넣고 싶으면 reserve테이블에서 state의 deafult값을 pending으로 두고
     // 결제시스템에서 결제가 완료되면 reserved로 바꿔주는 로직을 추가해야할듯
@@ -29,7 +36,9 @@ export async function reserveTicket(req: Request, res: Response) {
       { transaction }
     );
     await transaction.commit();
-    res.send("success");
+    return res
+      .status(200)
+      .json({ success: true, message: "Reservation completed" });
   } catch (err) {
     await transaction.rollback();
     return errConfig(
@@ -55,7 +64,7 @@ export async function cancelReserve(req: Request, res: Response) {
       transaction: transaction,
     });
     if (!reserve) {
-      return errConfig(res, null, "this reserveId is not exist");
+      errConfig(res, null, "this reserveId is not exist");
     }
     await findTicketSeatForCancel(reserve.seatId, transaction).catch((err) => {
       throw new Error(err);
@@ -73,7 +82,7 @@ export async function cancelReserve(req: Request, res: Response) {
       }
     );
     await transaction.commit();
-    res.send("success");
+    return res.send("success");
   } catch (err) {
     await transaction.rollback();
     return errConfig(
@@ -107,7 +116,7 @@ export async function getReserveList(req: Request, res: Response) {
         },
       ],
     });
-    res.send(
+    return res.send(
       reserves.map((reserve) => {
         reserve.dataValues;
       })

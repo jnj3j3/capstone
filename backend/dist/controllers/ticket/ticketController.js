@@ -47,7 +47,7 @@ function createTicket(req, res) {
                 }
             }
             yield transaction.commit();
-            res.send("success");
+            return res.send("success");
         }
         catch (err) {
             yield transaction.rollback();
@@ -68,9 +68,8 @@ function deleteTicket(req, res) {
                 lock: transaction.LOCK.UPDATE,
                 transaction: transaction,
             });
-            if (!ticket) {
-                return res.send("Ticket not found");
-            }
+            if (!ticket)
+                throw new Error("Ticket not found");
             Ticket.destroy({
                 where: {
                     id: ticketId,

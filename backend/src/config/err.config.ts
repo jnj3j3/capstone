@@ -1,8 +1,8 @@
 import { Response } from "express";
 
-export function errConfig(res: Response, err: any, message: string): Response {
+export function errConfig(res: Response, err: any, message: string): void {
   if (err != null) console.log(err + " error occured while " + message);
-  return res.status(500).send({
+  res.status(500).send({
     message: " This error occured while " + message,
   });
 }

@@ -4,7 +4,7 @@ exports.errConfig = errConfig;
 function errConfig(res, err, message) {
     if (err != null)
         console.log(err + " error occured while " + message);
-    return res.status(500).send({
+    res.status(500).send({
         message: " This error occured while " + message,
     });
 }
