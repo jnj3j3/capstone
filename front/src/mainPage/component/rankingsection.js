@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./css/rankingSection.css";
 import Ticket from "../../public/class/ticketClass";
 import img from "../../public/images/image.png";
-const periods = ["일간", "주간", "월간", "연간"];
+// const periods = ["일간", "주간", "월간", "연간"];
 
 const ticketList = [
   new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
@@ -12,8 +12,8 @@ const ticketList = [
   new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
 ];
 const RankingSection = () => {
-  const [selectedCategory, setSelectedCategory] = useState("뮤지컬");
-  const [selectedPeriod, setSelectedPeriod] = useState("일간");
+  // const [selectedCategory, setSelectedCategory] = useState("뮤지컬");
+  // const [selectedPeriod, setSelectedPeriod] = useState("일간");
 
   return (
     <div className="ranking-section">
@@ -34,7 +34,7 @@ const RankingSection = () => {
         ))}
       </div>
 
-      {/* 기간 필터 */}
+      {/* 기간 필터
       <div className="period-filter">
         {periods.map((period) => (
           <button
@@ -45,7 +45,7 @@ const RankingSection = () => {
             {period}
           </button>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

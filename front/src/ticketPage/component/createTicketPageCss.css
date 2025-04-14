@@ -1,0 +1,34 @@
+.createTicketPageMain {
+  height: 100vh;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  align-content: center;
+}
+.makeFullHeight {
+  align-self: stretch;
+}
+.seat-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.row-label {
+  width: 20px;
+  font-weight: bold;
+}
+.ticketMain {
+  margin-bottom: 30px;
+}
+.seatLayout {
+  width: 90px !important;
+}

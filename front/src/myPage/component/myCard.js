@@ -28,13 +28,13 @@ const MyCard = () => {
         <div className="card-body cardBodyInfo">
           <h5 className="card-title">{userInfo.name}</h5>
           <p className="card-text cardTextInfo">{userInfo.created}</p>
-          <button type="button" className="btn btn-primary">
+          <button type="button" className="btn btn-primary btn-sm">
             계정 삭제
           </button>
         </div>
         <ul className="list-group listGroupInfo">
           <li className="list-group-item">
-            <h5 className="card-title">ticket wallet</h5>
+            <h5 className="card-title">Ticket wallet</h5>
           </li>
           <li className="list-group-item">
             <Swiper

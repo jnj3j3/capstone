@@ -4,6 +4,8 @@ import DefaultLayout from "./defaultLayout";
 import MyPage from "../myPage/myPage";
 import SearchPage from "../searchPage/searchPage";
 import ReservationPage from "../reservationPage/reservationPage";
+import { Login } from "../loginPage/component/login";
+import CreateTicketPage from "../ticketPage/createTicketPage";
 const router = createBrowserRouter([
   {
     element: <DefaultLayout />,
@@ -23,6 +25,14 @@ const router = createBrowserRouter([
       {
         path: "/reservation",
         element: <ReservationPage />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/ticket/create",
+        element: <CreateTicketPage />,
       },
     ],
   },
