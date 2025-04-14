@@ -1,24 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { EffectCoverflow, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Buffer } from "buffer";
+import axios from "axios";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./css/cardSlider.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import img from "../../public/images/image.png";
-
-const ticketList = [
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-  { title: "알라딘", img: img, price: "1,670,000", time: "2시간 30분 남음" },
-];
 
 export default function CardSlider() {
+  const [ticketList, setTicketList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchTicketList = async () => {
+      try {
+        const response = await axios.get(
+          "http://100.106.99.20:3000/ticket/pageNationg/1/5"
+        );
+        const modified = response.data.rows.map((item) => {
+          const imageBuffer = item.image?.data;
+          let imageSrc = "";
+
+          if (imageBuffer) {
+            const base64Image = Buffer.from(imageBuffer).toString("base64");
+            imageSrc = `data:image/jpeg;base64,${base64Image}`;
+          }
+          const startDt = new Date(item.startDate);
+          const endDt = new Date(item.endDate);
+          return {
+            ...item,
+            image: imageSrc,
+            startDate: startDt.toLocaleString("ko-KR", {
+              timeZone: "Asia/Seoul",
+            }),
+            endDate: endDt.toLocaleString("ko-KR", {
+              timeZone: "Asia/Seoul",
+            }),
+          };
+        });
+        setTicketList(modified);
+      } catch (error) {
+        console.error("Error fetching ticket list:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTicketList();
+  }, []);
   return (
     <>
       <Swiper
@@ -35,28 +65,30 @@ export default function CardSlider() {
         }}
         pagination={true}
         modules={[EffectCoverflow, Pagination]}
-        className="custom-swiper" // ✅ Swiper에 고유 클래스명 적용
+        className="custom-swiper"
       >
-        {ticketList.length > 0 ? (
+        {loading ? (
+          <SwiperSlide className="custom-swiper-slide loading">
+            <div className="spinner-border text-dark" role="status"></div>
+          </SwiperSlide>
+        ) : ticketList.length > 0 ? (
           ticketList.map((ticket, index) => (
             <SwiperSlide key={index} className="custom-swiper-slide">
-              {" "}
-              {/* ✅ 고유 클래스명 적용 */}
-              <img src={ticket.img} alt="티켓 이미지" />
+              <img src={ticket.image} alt="티켓 이미지" />
               <div className="custom-info-box">
-                {" "}
-                {/* ✅ 고유 클래스명 적용 */}
                 <div className="custom-price-time">
                   <div className="custom-price">
-                    <span className="custom-label">판매금액 </span>
-                    <span className="custom-value">{ticket.price}원</span>
+                    <span className="custom-label">name </span>
+                    <span className="custom-value">{ticket.name}</span>
                   </div>
                   <div className="custom-time">
-                    <span className="custom-label">판매시간 </span>
-                    <span className="custom-value">{ticket.time} 남음</span>
+                    <span className="custom-label">endAt </span>
+                    <span className="custom-value">{ticket.endDate}</span>
                   </div>
                 </div>
-                <button className="custom-share-button">↩</button>
+                <button className="custom-share-button">
+                  <i className="bi bi-box-arrow-in-left"></i>
+                </button>
               </div>
             </SwiperSlide>
           ))

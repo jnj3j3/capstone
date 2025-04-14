@@ -4,11 +4,13 @@ import "./login.css";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../public/function/authContext";
 export function Login() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useAuth();
   useEffect(() => {
     // 초기 상태에서 login-show만 보여줌
     document.querySelector(".login-show")?.classList.add("show-log-panel");
@@ -41,6 +43,7 @@ export function Login() {
       );
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
+      setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
       Swal.fire({
@@ -90,10 +93,19 @@ export function Login() {
     axios
       .post("http://100.106.99.20:3000/user/createUser", data)
       .then((response) => {
+        if (response.data === "name is already exists") {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Name is already exists!",
+          });
+          return;
+        }
         Swal.fire({
           title: "Succes! please login",
           icon: "success",
         });
+
         navigate("/");
       })
       .catch((error) => {

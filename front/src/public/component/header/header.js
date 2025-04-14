@@ -1,12 +1,27 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "../../function/authContext";
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
   const navigate = useNavigate();
   const goHome = () => {
     navigate("/");
+  };
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+  const searchTickets = (e) => {
+    if (e.key === "Enter" || e.type === "click") {
+      if (searchQuery.trim()) {
+        navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      }
+    }
   };
   return (
     <header className="container-fluid bg-light py-3">
@@ -24,12 +39,19 @@ const Header = () => {
               placeholder="Search for tickets"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={searchTickets}
             />
           </div>
           <div>
-            <a href="/login" className="me-3 text-decoration-none">
-              Login
-            </a>
+            {isLoggedIn ? (
+              <a className="me-3 text-decoration-none" onClick={logout}>
+                Logout
+              </a>
+            ) : (
+              <a href="/login" className="me-3 text-decoration-none">
+                Login
+              </a>
+            )}
             <a href="/mypage" className="text-decoration-none">
               My Page
             </a>

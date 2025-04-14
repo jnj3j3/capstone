@@ -1,0 +1,13 @@
+html,
+body {
+  min-width: 1000px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  box-sizing: border-box;
+}
+/* 페이지 확대/축소 시에도 최소 크기 적용 */
+body {
+  transform-origin: top left; /* 확대/축소 기준을 왼쪽 상단으로 설정 */
+  transition: transform 0.2s ease-in-out; /* 확대 시 부드럽게 적용 */
+}

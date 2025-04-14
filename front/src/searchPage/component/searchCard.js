@@ -1,74 +1,112 @@
-import React, { useState } from "react";
-
-import Ticket from "../../public/class/ticketClass";
-import img from "../../public/images/image.png";
+import React, { useEffect, useState } from "react";
 import "./css/searchCard.css";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
-const ticketList = [
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-];
-
-// 페이지네이션 개수 및 범위 설정
-const totalPages = 7;
-const visiblePageCount = 5; // 한 번에 보이는 페이지 개수
+const visiblePageCount = 6;
 
 const SearchCard = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [ticketList, setTicketList] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
 
-  // 현재 보이는 페이지 범위 계산
-  const startPage = Math.max(1, currentPage);
-  const endPage = Math.min(totalPages, startPage + visiblePageCount - 1);
+  const groupSize = visiblePageCount;
+  const currentGroup = Math.floor((currentPage - 1) / groupSize);
+  const startPage = currentGroup * groupSize + 1;
+  const endPage = Math.min(startPage + groupSize - 1, totalPages);
   const paginationArr = Array.from(
     { length: endPage - startPage + 1 },
     (_, i) => startPage + i
   );
 
-  const handlePrevious = () => {
+  const handlePreviousGroup = () => {
     if (startPage > 1) {
-      setCurrentPage((prev) => prev - 1);
+      setCurrentPage(startPage - 1);
     }
   };
 
-  const handleNext = () => {
+  const handleNextGroup = () => {
     if (endPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
+      setCurrentPage(endPage + 1);
     }
   };
+
+  const arrayBufferToBase64 = (buffer) => {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    bytes.forEach((b) => (binary += String.fromCharCode(b)));
+    return window.btoa(binary);
+  };
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        setLoading(true);
+        console.log(searchQuery);
+        const res = await axios.get(
+          `http://100.106.99.20:3000/ticket/pageNationg/${currentPage}/6`,
+          {}
+        );
+
+        const { count, rows } = res.data;
+        setTotalPages(Math.ceil(count / 6));
+        setTicketList(
+          rows.map((item) => ({
+            id: item.id,
+            name: item.name,
+            time: new Date(item.created).toLocaleString("ko-KR", {
+              timeZone: "Asia/Seoul",
+            }),
+            img: `data:image/jpeg;base64,${arrayBufferToBase64(
+              item.image.data
+            )}`,
+          }))
+        );
+      } catch (err) {
+        console.error("에러 발생:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTickets();
+  }, [currentPage, searchQuery]);
 
   return (
     <div className="searchMain">
       <div className="searchBody">
-        <div className="cardBody">
-          <div className="row row-cols-1 row-cols-md-3 g-4">
-            {ticketList.map((ticket, idx) => (
-              <div className="col" key={idx}>
-                <div className="card ticketCard">
-                  <img src={ticket.img} className="card-img-top" alt="..." />
-                  <div className="card-body">
-                    <h5 className="card-title">{ticket.name}</h5>
-                    <p className="card-text">{ticket.time}</p>
-                    <p className="card-text">{ticket.price} 원</p>
+        {loading ? (
+          <div className="spinner-border text-dark" role="status"></div>
+        ) : (
+          <div className="cardBody">
+            <div className="row row-cols-1 row-cols-md-3 g-4">
+              {ticketList.map((ticket, idx) => (
+                <div className="col" key={idx}>
+                  <div className="card ticketCard">
+                    <img src={ticket.img} className="card-img-top" alt="..." />
+                    <div className="card-body">
+                      <h5 className="card-title">{ticket.name}</h5>
+                      <p className="card-text">{ticket.time}</p>
+                      <p className="card-text">{ticket.price}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="paginationMain">
         <nav aria-label="Page navigation">
-          <ul className="pagination">
+          <ul className="pagination justify-content-center">
             <li className={`page-item ${startPage === 1 ? "disabled" : ""}`}>
               <button
                 className="page-link"
-                onClick={handlePrevious}
+                onClick={handlePreviousGroup}
                 disabled={startPage === 1}
               >
                 &laquo;
@@ -96,7 +134,7 @@ const SearchCard = () => {
             >
               <button
                 className="page-link"
-                onClick={handleNext}
+                onClick={handleNextGroup}
                 disabled={endPage === totalPages}
               >
                 &raquo;
