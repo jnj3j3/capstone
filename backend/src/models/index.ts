@@ -17,6 +17,6 @@ Reserve.belongsTo(TicketSeat, { foreignKey: "seatId" });
 Reserve.belongsTo(User, { foreignKey: "userId" });
 TicketSeat.belongsTo(Ticket, { foreignKey: "ticketId" });
 Ticket.belongsTo(TicketSeat, { foreignKey: "userId" });
-TicketRanking.belongsTo(Ticket, { foreignKey: "ticketId" });
+TicketRanking.belongsTo(Ticket, { foreignKey: "ticketId", as: "ticket" });
 
 export { UserReq, TicketReq, SeatRow, SeatRowRequestBody, TicketBody };
