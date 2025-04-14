@@ -110,7 +110,7 @@ function pageNationg(req, res) {
         const page = parseInt(req.params.page);
         const limit = parseInt(req.params.limit);
         const offset = (page - 1) * limit;
-        const searchQuery = req.body.searchQuery;
+        const searchQuery = req.query.searchQuery;
         if (searchQuery == " " || searchQuery == undefined) {
             Ticket.findAndCountAll({
                 limit: limit,
@@ -139,7 +139,7 @@ function pageNationg(req, res) {
             Ticket.findAndCountAll({
                 where: {
                     [db_config_1.seq.Op.and]: [
-                        db_config_1.seq.Sequelize.literal(`MATCH(name, content) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`),
+                        db_config_1.seq.Sequelize.literal(`MATCH(name, context) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`),
                         {
                             endDate: {
                                 [db_config_1.seq.Op.gte]: new Date(),

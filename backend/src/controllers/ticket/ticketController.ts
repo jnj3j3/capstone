@@ -132,7 +132,7 @@ export function pageNationg(req: Request, res: Response) {
         where: {
           [seq.Op.and]: [
             seq.Sequelize.literal(
-              `MATCH(name, content) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`
+              `MATCH(name, context) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`
             ),
             {
               endDate: {
