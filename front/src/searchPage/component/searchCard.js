@@ -45,10 +45,13 @@ const SearchCard = () => {
     const fetchTickets = async () => {
       try {
         setLoading(true);
-        console.log(searchQuery);
         const res = await axios.get(
           `http://100.106.99.20:3000/ticket/pageNationg/${currentPage}/6`,
-          {}
+          {
+            params: {
+              searchQuery: searchQuery,
+            },
+          }
         );
 
         const { count, rows } = res.data;
