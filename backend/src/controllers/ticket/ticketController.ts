@@ -103,7 +103,7 @@ export function pageNationg(req: Request, res: Response) {
     const page = parseInt(req.params.page);
     const limit = parseInt(req.params.limit);
     const offset = (page - 1) * limit;
-    const searchQuery = req.body.searchQuery;
+    const searchQuery = req.query.searchQuery;
     if (searchQuery == " " || searchQuery == undefined) {
       Ticket.findAndCountAll({
         limit: limit,
