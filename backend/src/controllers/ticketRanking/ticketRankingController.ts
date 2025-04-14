@@ -15,11 +15,7 @@ export async function getRanking(req: Request, res: Response) {
         },
       ],
     });
-    return res.send(
-      ranking.map((ticket) => {
-        ticket.dataValues;
-      })
-    );
+    return res.send(ranking.map((ticket) => ticket.dataValues));
   } catch (err) {
     return errConfig(res, err, "this error occurred while getting ranking");
   }

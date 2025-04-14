@@ -26,9 +26,7 @@ function getRanking(req, res) {
                     },
                 ],
             });
-            return res.send(ranking.map((ticket) => {
-                ticket.dataValues;
-            }));
+            return res.send(ranking.map((ticket) => ticket.dataValues));
         }
         catch (err) {
             return (0, err_config_1.errConfig)(res, err, "this error occurred while getting ranking");
