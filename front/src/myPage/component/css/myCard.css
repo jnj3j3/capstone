@@ -55,3 +55,16 @@
   margin-bottom: 30px;
   margin-top: 30px;
 }
+
+.seatHighlight {
+  font-weight: bold;
+}
+.walletInfo {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.noTicketBody {
+  height: 100%;
+  width: 100%;
+  align-items: center;
+}
