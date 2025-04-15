@@ -44,6 +44,8 @@
 }
 .mySwiper.ticketWallet {
   width: 60%;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .card-title.userName {

@@ -3,14 +3,16 @@ import Swal from "sweetalert2";
 
 export async function checkToken() {
   const token = localStorage.getItem("accessToken");
-  if (token) {
-    axios.defaults.headers.common["Authorization"] = token;
-  } else {
+  if (!token) {
     return false;
   }
   try {
-    const response = fetchWithAutoRefresh(
-      await axios.get("http://100.106.99.20:3000/user/checkToken")
+    const response = await fetchWithAutoRefresh(() =>
+      axios.get("http://100.106.99.20:3000/user/checkToken", {
+        headers: {
+          Authorization: token,
+        },
+      })
     );
     if (!response) throw new Error("refresh Token expired");
     localStorage.setItem("name", response.data.name);
@@ -52,14 +54,13 @@ export async function fetchWithAutoRefresh(fetchFunction) {
     return response;
   } catch (error) {
     const { response } = error;
-
+    console.log(error);
     if (
       response &&
       response.status === 401 &&
       response.data?.error === "Token expired"
     ) {
       const refreshed = await refreshToken();
-
       if (!refreshed) {
         Swal.fire({
           icon: "error",

@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { imageCompFun } from "../../public/function/imageFun";
 import { useNavigate } from "react-router-dom";
-import { refreshToken } from "../../public/function/tokenFun";
+import { fetchWithAutoRefresh } from "../../public/function/tokenFun";
 export function CreateTicket() {
   const navigate = useNavigate();
   const [imageFile, setImageFile] = useState(null);
@@ -76,12 +76,14 @@ export function CreateTicket() {
         navigate("/login");
         return;
       }
-
-      axios.defaults.headers.common["Authorization"] = accessToken;
-
-      const response = await axios.post(
-        "http://100.106.99.20:3000/ticket/createTicket",
-        formData
+      //change this
+      const response = await fetchWithAutoRefresh(() =>
+        axios.post("http://100.106.99.20:3000/ticket/createTicket", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: accessToken,
+          },
+        })
       );
 
       Swal.fire({
@@ -90,43 +92,17 @@ export function CreateTicket() {
       });
       navigate("/");
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        // 401 Unauthorized 발생 시 refresh token을 사용하여 새로운 access token 받기
-        const newAccessToken = await refreshToken();
-
-        axios.defaults.headers.common["Authorization"] = newAccessToken;
-
-        try {
-          const retryResponse = await axios.post(
-            "http://100.106.99.20:3000/ticket/createTicket",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-
-          Swal.fire({
-            icon: "success",
-            title: "Ticket created successfully after token refresh!",
-          });
-        } catch (retryError) {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Error occurred while retrying the ticket creation!",
-          });
-          navigate("/login");
-        }
-      } else {
-        // 다른 오류 처리
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Error occurred while creating ticket!" + error,
-        });
-      }
+      // 다른 오류 처리
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Error occurred while creating ticket! Please log in again.",
+      }).then(() => {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("name");
+        navigate("/login");
+      });
     }
   };
 

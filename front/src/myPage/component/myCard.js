@@ -4,7 +4,6 @@ import { EffectCards } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import Ticket from "../../public/class/ticketClass";
-import img from "../../public/images/image.png";
 import "./css/myCard.css";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -44,7 +43,29 @@ const MyCard = () => {
         }
 
         const ticketList = response.data.map((ticket) => {
-          return new Ticket(ticket.name, ticket.time, ticket.price, img);
+          const imageBuffer = ticket.TicketSeat.Ticket.image?.data;
+          let img = "";
+          if (imageBuffer) {
+            const base64Image = Buffer.from(imageBuffer).toString("base64");
+            img = `data:image/jpeg;base64,${base64Image}`;
+          }
+          const startDt = new Date(ticket.TicketSeat.Ticket.startDate);
+          const endDt = new Date(ticket.TicketSeat.Ticket.endDate);
+          const startDate = startDt.toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+          });
+          const endDate = endDt.toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+          });
+          return new Ticket(
+            ticket.TicketSeat.Ticket.name,
+            ticket.TicketSeat.seatNumber,
+            img,
+            startDate,
+            endDate,
+            ticket.TicketSeat.Ticket.price,
+            ticket.TicketSeat.Ticket.when
+          );
         });
         setTicketList(ticketList);
       } catch (error) {
@@ -87,7 +108,7 @@ const MyCard = () => {
                     <img src={ticket.img} className="card-img-top" alt="..." />
                     <div className="card-body ticketCardBody">
                       <h3 className="card-title">{ticket.name}</h3>
-                      <div className="walletInfo">{ticket.time}</div>
+                      <div className="walletInfo">{ticket.when}</div>
                       <div className="walletInfo">{ticket.price}원</div>
                       <button type="button" className="btn btn-primary btn-sm">
                         티켓 취소
