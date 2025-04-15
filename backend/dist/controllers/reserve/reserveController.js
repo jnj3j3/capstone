@@ -103,21 +103,17 @@ function getReserveList(req, res) {
                 include: [
                     {
                         model: index_1.db.TicketSeat,
-                        as: "ticketSeat",
                         attributes: ["seatNumber", "updated"],
                         include: [
                             {
                                 model: index_1.db.Ticket,
-                                as: "ticket",
                                 attributes: ["name", "startDate", "endDate", "image"],
                             },
                         ],
                     },
                 ],
             });
-            return res.send(reserves.map((reserve) => {
-                reserve.dataValues;
-            }));
+            return res.send(reserves.map((reserve) => reserve.dataValues));
         }
         catch (err) {
             return (0, err_config_1.errConfig)(res, err, "this error occurred while getting reserve list");

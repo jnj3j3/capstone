@@ -104,23 +104,17 @@ export async function getReserveList(req: Request, res: Response) {
       include: [
         {
           model: db.TicketSeat,
-          as: "ticketSeat",
           attributes: ["seatNumber", "updated"],
           include: [
             {
               model: db.Ticket,
-              as: "ticket",
               attributes: ["name", "startDate", "endDate", "image"],
             },
           ],
         },
       ],
     });
-    return res.send(
-      reserves.map((reserve) => {
-        reserve.dataValues;
-      })
-    );
+    return res.send(reserves.map((reserve) => reserve.dataValues));
   } catch (err) {
     return errConfig(
       res,

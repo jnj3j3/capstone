@@ -13,7 +13,9 @@
       "description": "test routes"
     }
   ],
-  "schemes": ["http"],
+  "schemes": [
+    "http"
+  ],
   "paths": {
     "/reserve/reserveTicket/{ticketId}": {
       "post": {
@@ -66,6 +68,26 @@
             "required": true,
             "type": "string"
           },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/reserve/getReserveList": {
+      "get": {
+        "description": "",
+        "parameters": [
           {
             "name": "authorization",
             "in": "header",
@@ -151,95 +173,29 @@
     },
     "/ticket/pageNationg/{page}/{limit}": {
       "get": {
-        "summary": "티켓 목록 페이징",
-        "description": "페이지네이션을 이용하여 티켓 목록을 검색합니다.",
+        "description": "",
         "parameters": [
           {
             "name": "page",
             "in": "path",
-            "description": "현재 페이지 번호",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "example": 1
-            }
+            "type": "string"
           },
           {
             "name": "limit",
             "in": "path",
-            "description": "한 페이지에 표시될 티켓의 개수",
             "required": true,
-            "schema": {
-              "type": "integer",
-              "example": 6
-            }
+            "type": "string"
           },
           {
             "name": "searchQuery",
             "in": "query",
-            "description": "검색어",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "name"
-            }
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "성공적으로 티켓 목록을 가져옵니다.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "count": {
-                      "type": "integer",
-                      "description": "전체 티켓의 개수"
-                    },
-                    "rows": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "description": "티켓 ID"
-                          },
-                          "name": {
-                            "type": "string",
-                            "description": "티켓 이름"
-                          },
-                          "created": {
-                            "type": "string",
-                            "format": "date-time",
-                            "description": "티켓 생성 시간"
-                          },
-                          "context": {
-                            "type": "string",
-                            "description": "티켓 설명"
-                          },
-                          "image": {
-                            "type": "object",
-                            "properties": {
-                              "type": {
-                                "type": "string"
-                              },
-                              "data": {
-                                "type": "array",
-                                "items": {
-                                  "type": "integer"
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -317,7 +273,9 @@
     },
     "/user/login": {
       "post": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "description": "",
         "parameters": [
           {
