@@ -22,6 +22,8 @@ export async function createTicket(req: Request, res: Response) {
       image: req.file?.buffer,
       startDate: body.startDate,
       endDate: body.endDate,
+      when: body.when,
+      price: body.price,
     };
     const createdTicket = await Ticket.create(ticket, { transaction }).catch(
       (err) => {
@@ -150,6 +152,7 @@ export function pageNationg(req: Request, res: Response) {
           if (data.count == 0) {
             return res.send("Ticket not found");
           }
+          console.log(data.rows[0].dataValues.price);
           data.rows.map((row) => {
             row.dataValues;
           });

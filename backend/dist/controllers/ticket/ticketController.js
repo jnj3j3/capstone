@@ -32,6 +32,8 @@ function createTicket(req, res) {
                 image: (_b = req.file) === null || _b === void 0 ? void 0 : _b.buffer,
                 startDate: body.startDate,
                 endDate: body.endDate,
+                when: body.when,
+                price: body.price,
             };
             const createdTicket = yield Ticket.create(ticket, { transaction }).catch((err) => {
                 throw new Error(err);
@@ -156,6 +158,7 @@ function pageNationg(req, res) {
                 if (data.count == 0) {
                     return res.send("Ticket not found");
                 }
+                console.log(data.rows[0].dataValues.price);
                 data.rows.map((row) => {
                     row.dataValues;
                 });

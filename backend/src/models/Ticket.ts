@@ -9,6 +9,8 @@ interface TicketAttributes {
   userId: number;
   startDate: Date;
   endDate: Date;
+  when: Date;
+  price: number;
 }
 
 export class Ticket
@@ -24,6 +26,8 @@ export class Ticket
   public userId!: number;
   public startDate!: Date;
   public endDate!: Date;
+  public when!: Date;
+  public price!: number;
 }
 
 Ticket.init(
@@ -58,6 +62,12 @@ Ticket.init(
     endDate: {
       type: seq.DATE,
     },
+    when: {
+      type: seq.DATE,
+    },
+    price: {
+      type: seq.INTEGER,
+    },
   },
   {
     modelName: "Ticket",
@@ -75,6 +85,8 @@ export interface TicketBody {
   image: Buffer;
   startDate: Date;
   endDate: Date;
+  when: Date;
+  price: number;
 }
 export interface TicketReq {
   name: string;
@@ -82,4 +94,6 @@ export interface TicketReq {
   image: Buffer;
   startDate: Date;
   endDate: Date;
+  when: Date;
+  price: number;
 }

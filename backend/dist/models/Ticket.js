@@ -36,6 +36,12 @@ Ticket.init({
     endDate: {
         type: db_config_1.seq.DATE,
     },
+    when: {
+        type: db_config_1.seq.DATE,
+    },
+    price: {
+        type: db_config_1.seq.INTEGER,
+    },
 }, {
     modelName: "Ticket",
     tableName: "Ticket",
