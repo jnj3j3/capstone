@@ -107,7 +107,14 @@ function getReserveList(req, res) {
                         include: [
                             {
                                 model: index_1.db.Ticket,
-                                attributes: ["name", "startDate", "endDate", "image"],
+                                attributes: [
+                                    "name",
+                                    "startDate",
+                                    "endDate",
+                                    "image",
+                                    "price",
+                                    "when",
+                                ],
                             },
                         ],
                     },

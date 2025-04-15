@@ -108,7 +108,14 @@ export async function getReserveList(req: Request, res: Response) {
           include: [
             {
               model: db.Ticket,
-              attributes: ["name", "startDate", "endDate", "image"],
+              attributes: [
+                "name",
+                "startDate",
+                "endDate",
+                "image",
+                "price",
+                "when",
+              ],
             },
           ],
         },
