@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../public/function/authContext";
+import { checkToken } from "../../public/function/tokenFun";
 export function Login() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [name, setName] = useState("");
@@ -41,8 +42,18 @@ export function Login() {
         "http://100.106.99.20:3000/user/login",
         data
       );
+
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
+      const checkedToken = await checkToken();
+      if (!checkedToken) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please log in again!",
+        });
+        return;
+      }
       setIsLoggedIn(true);
       navigate("/");
     } catch (error) {
