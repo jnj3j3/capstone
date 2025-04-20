@@ -15,10 +15,18 @@ const redis_1 = require("./redis");
 const QUEUE_PREFIX = "ticket_queue:";
 const joinQueue = (ticketId, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const client = yield (0, redis_1.redisClient)();
-    const score = Date.now(); // timestamp로 정렬
-    // 10분이 지난 데이터는 삭제
-    yield client.zRemRangeByScore(`ticket_queue:${ticketId}`, 0, Date.now() - 10 * 60 * 1000);
-    yield client.zAdd(`ticket_queue:${ticketId}`, [{ score, value: userId }]);
+    const queueKey = `ticket_queue:${ticketId}`;
+    const now = Date.now();
+    const expirationTime = now - 10 * 60 * 1000;
+    const luaScript = `
+    redis.call('ZREMRANGEBYSCORE', KEYS[1], 0, ARGV[1])
+    redis.call('ZADD', KEYS[1], ARGV[2], ARGV[3])
+    return 1
+  `;
+    yield client.eval(luaScript, {
+        keys: [queueKey],
+        arguments: [expirationTime.toString(), now.toString(), userId],
+    });
 });
 exports.joinQueue = joinQueue;
 const getQueueRank = (ticketId, userId) => __awaiter(void 0, void 0, void 0, function* () {
