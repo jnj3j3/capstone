@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./css/searchCard.css";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const visiblePageCount = 6;
 
 const SearchCard = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const [ticketList, setTicketList] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -87,7 +88,11 @@ const SearchCard = () => {
           <div className="cardBody">
             <div className="row row-cols-1 row-cols-md-3 g-4">
               {ticketList.map((ticket, idx) => (
-                <div className="col" key={idx}>
+                <div
+                  className="col"
+                  key={idx}
+                  onClick={() => navigate(`/ticket/${ticket.id}`)}
+                >
                   <div className="card ticketCard">
                     <img src={ticket.img} className="card-img-top" alt="..." />
                     <div className="card-body">

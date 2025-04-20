@@ -2,9 +2,9 @@ import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { imageCompFun } from "../../public/function/imageFun";
+import { imageCompFun } from "../../../public/function/imageFun";
 import { useNavigate } from "react-router-dom";
-import { fetchWithAutoRefresh } from "../../public/function/tokenFun";
+import { fetchWithAutoRefresh } from "../../../public/function/tokenFun";
 export function CreateTicket() {
   const navigate = useNavigate();
   const [imageFile, setImageFile] = useState(null);

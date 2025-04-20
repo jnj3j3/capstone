@@ -5,7 +5,8 @@ import MyPage from "../myPage/myPage";
 import SearchPage from "../searchPage/searchPage";
 import ReservationPage from "../reservationPage/reservationPage";
 import { Login } from "../loginPage/component/login";
-import CreateTicketPage from "../ticketPage/createTicketPage";
+import CreateTicketPage from "../ticketPage/create/createTicketPage";
+import TicketPage from "../ticketPage/ticket/ticketPage";
 const router = createBrowserRouter([
   {
     element: <DefaultLayout />,
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: "/ticket/create",
         element: <CreateTicketPage />,
+      },
+      {
+        path: "/ticket/:id",
+        element: <TicketPage />,
       },
     ],
   },

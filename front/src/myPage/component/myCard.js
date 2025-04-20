@@ -58,11 +58,16 @@ const MyCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       const userName = localStorage.getItem("name");
-      if (!userName) {
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      if (!userName || isLoggedIn == "false") {
+        localStorage.removeItem("name");
+        localStorage.setItem("isLoggedIn", "false");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "User not found! Please log in.",
+          text: "User not found! Please log in first.",
         }).then(() => {
           navigate("/login");
         });
@@ -157,7 +162,11 @@ const MyCard = () => {
                 className="mySwiper ticketWallet"
               >
                 {ticketList.map((ticket, idx) => (
-                  <SwiperSlide className="swiperSlider ticketWallet" key={idx}>
+                  <SwiperSlide
+                    className="swiperSlider ticketWallet"
+                    key={idx}
+                    onClick={() => navigate(`/ticket/${ticket.id}`)}
+                  >
                     <div className="card ticketCard">
                       <img
                         src={ticket.img}

@@ -35,7 +35,6 @@ export async function deleteAccount() {
     if (response?.status === 200) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("name");
       return true;
     }
 

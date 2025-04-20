@@ -3,12 +3,13 @@ import "./css/rankingSection.css";
 import axios from "axios";
 import { Buffer } from "buffer";
 // const periods = ["일간", "주간", "월간", "연간"];
-
+import { useNavigate } from "react-router-dom";
 const RankingSection = () => {
   // const [selectedCategory, setSelectedCategory] = useState("뮤지컬");
   // const [selectedPeriod, setSelectedPeriod] = useState("일간");
   const [ticketList, setTicketList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchTickets = async () => {
       try {
@@ -64,7 +65,11 @@ const RankingSection = () => {
           </div>
         ) : (
           ticketList.map((show, idx) => (
-            <div className="ranking-card" key={idx}>
+            <div
+              className="ranking-card"
+              key={idx}
+              onClick={() => navigate(`/ticket/${show.ticketId}`)}
+            >
               <div className="image-container">
                 <img src={show.ticket.image} alt={show.ticket.name} />
                 <span className="rank-number">{idx + 1}</span>

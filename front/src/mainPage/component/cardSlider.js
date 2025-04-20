@@ -8,8 +8,9 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "./css/cardSlider.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
+import { useNavigate } from "react-router-dom";
 export default function CardSlider() {
+  const navigate = useNavigate();
   const [ticketList, setTicketList] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -73,7 +74,11 @@ export default function CardSlider() {
           </SwiperSlide>
         ) : ticketList.length > 0 ? (
           ticketList.map((ticket, index) => (
-            <SwiperSlide key={index} className="custom-swiper-slide">
+            <SwiperSlide
+              key={index}
+              className="custom-swiper-slide"
+              onClick={() => navigate(`/ticket/${ticket.id}`)}
+            >
               <img src={ticket.image} alt="티켓 이미지" />
               <div className="custom-info-box">
                 <div className="custom-price-time">
