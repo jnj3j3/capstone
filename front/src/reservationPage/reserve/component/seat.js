@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import img from "../../public/images/image.png";
+import img from "../../../public/images/image.png";
 import "./css/seat.css";
 const seatRows = [
   { row: "A", seats: 8 },
