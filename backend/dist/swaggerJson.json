@@ -154,6 +154,12 @@
                 "endDate": {
                   "example": "any"
                 },
+                "when": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
                 "seatRows": {
                   "example": "any"
                 }
@@ -167,6 +173,24 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/ticket/ticketSeat/{ticketId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

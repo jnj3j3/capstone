@@ -9,7 +9,6 @@ import { setupQueueSocket } from "./utils/websocket";
 import { startRankingCronJob } from "./cron/rankingCron";
 
 import { db } from "./models";
-import { testRouter } from "./routes/testRouter";
 import { userRouter } from "./routes/userRouter";
 import { ticketRouter } from "./routes/ticketRouter";
 import { reserveRouter } from "./routes/reserveRouter";
@@ -44,7 +43,6 @@ db.sequelize
   });
 
 // 라우터 연결
-app.use("", testRouter);
 app.use("", userRouter);
 app.use("", ticketRouter);
 app.use("", reserveRouter);

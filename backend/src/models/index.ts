@@ -16,7 +16,8 @@ export const db = {
 Reserve.belongsTo(TicketSeat, { foreignKey: "seatId" });
 Reserve.belongsTo(User, { foreignKey: "userId" });
 TicketSeat.belongsTo(Ticket, { foreignKey: "ticketId" });
-Ticket.belongsTo(TicketSeat, { foreignKey: "userId" });
+TicketSeat.hasMany(Reserve, { foreignKey: "seatId" });
+Ticket.hasMany(TicketSeat, { foreignKey: "ticketId", as: "ticketSeats" });
 TicketRanking.belongsTo(Ticket, { foreignKey: "ticketId", as: "ticket" });
 
 export { UserReq, TicketReq, SeatRow, SeatRowRequestBody, TicketBody };

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTicket = createTicket;
 exports.deleteTicket = deleteTicket;
 exports.getTicket = getTicket;
+exports.getTicketWtihSeats = getTicketWtihSeats;
 exports.pageNationg = pageNationg;
 const index_1 = require("../../models/index");
 const err_config_1 = require("../../config/err.config");
@@ -107,6 +108,36 @@ function getTicket(req, res) {
         return (0, err_config_1.errConfig)(res, err, "this error occured while getTicket");
     });
 }
+function getTicketWtihSeats(req, res) {
+    const ticketId = req.params.ticketId;
+    Ticket.findOne({
+        where: {
+            id: ticketId,
+        },
+        include: [
+            {
+                model: index_1.db.TicketSeat,
+                as: "ticketSeats",
+                include: [
+                    {
+                        model: index_1.db.Reserve,
+                    },
+                ],
+            },
+        ],
+    })
+        .then((data) => {
+        if (data) {
+            return res.send(data.dataValues);
+        }
+        else {
+            return res.send("Ticket not found");
+        }
+    })
+        .catch((err) => {
+        return (0, err_config_1.errConfig)(res, err, "this error occured while getTicket");
+    });
+}
 function pageNationg(req, res) {
     try {
         const page = parseInt(req.params.page);
@@ -158,7 +189,6 @@ function pageNationg(req, res) {
                 if (data.count == 0) {
                     return res.send("Ticket not found");
                 }
-                console.log(data.rows[0].dataValues.price);
                 data.rows.map((row) => {
                     row.dataValues;
                 });

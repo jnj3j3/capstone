@@ -99,6 +99,35 @@ export function getTicket(req: Request, res: Response) {
       return errConfig(res, err, "this error occured while getTicket");
     });
 }
+export function getTicketWtihSeats(req: Request, res: Response) {
+  const ticketId = req.params.ticketId;
+  Ticket.findOne({
+    where: {
+      id: ticketId,
+    },
+    include: [
+      {
+        model: db.TicketSeat,
+        as: "ticketSeats",
+        include: [
+          {
+            model: db.Reserve,
+          },
+        ],
+      },
+    ],
+  })
+    .then((data) => {
+      if (data) {
+        return res.send(data.dataValues);
+      } else {
+        return res.send("Ticket not found");
+      }
+    })
+    .catch((err) => {
+      return errConfig(res, err, "this error occured while getTicket");
+    });
+}
 
 export function pageNationg(req: Request, res: Response) {
   try {
@@ -152,7 +181,6 @@ export function pageNationg(req: Request, res: Response) {
           if (data.count == 0) {
             return res.send("Ticket not found");
           }
-          console.log(data.rows[0].dataValues.price);
           data.rows.map((row) => {
             row.dataValues;
           });

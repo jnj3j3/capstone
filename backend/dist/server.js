@@ -12,7 +12,6 @@ const socket_io_1 = require("socket.io"); // 중요: 이름 충돌 피하기
 const websocket_1 = require("./utils/websocket");
 const rankingCron_1 = require("./cron/rankingCron");
 const models_1 = require("./models");
-const testRouter_1 = require("./routes/testRouter");
 const userRouter_1 = require("./routes/userRouter");
 const ticketRouter_1 = require("./routes/ticketRouter");
 const reserveRouter_1 = require("./routes/reserveRouter");
@@ -42,7 +41,6 @@ models_1.db.sequelize
     console.error("Error synchronizing database:", err);
 });
 // 라우터 연결
-app.use("", testRouter_1.testRouter);
 app.use("", userRouter_1.userRouter);
 app.use("", ticketRouter_1.ticketRouter);
 app.use("", reserveRouter_1.reserveRouter);
