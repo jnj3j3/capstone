@@ -14,17 +14,21 @@ const redisUtils_1 = require("./redis/redisUtils");
 const userSockets = new Map(); // userKey -> socket
 function setupQueueSocket(io) {
     io.on("connection", (socket) => {
-        console.log("Client connected");
         socket.on("join-queue", (_a) => __awaiter(this, [_a], void 0, function* ({ ticketId, userId }) {
-            yield (0, redisUtils_1.joinQueue)(ticketId, userId);
-            const key = `${ticketId}:${userId}`;
-            userSockets.set(key, socket);
+            try {
+                yield (0, redisUtils_1.joinQueue)(ticketId, userId); // 이 부분에서 에러가 날 가능성
+                const key = `${ticketId}:${userId}`;
+                userSockets.set(key, socket);
+            }
+            catch (err) {
+                console.error("Error in join-queue:", err, userId);
+                socket.emit("error", { message: "Something went wrong!" });
+            }
         }));
         socket.on("disconnect", () => {
             for (const [key, s] of userSockets) {
                 if (s.id === socket.id) {
                     userSockets.delete(key);
-                    console.log("User disconnected from queue");
                     break;
                 }
             }

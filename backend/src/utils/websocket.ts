@@ -6,19 +6,21 @@ const userSockets = new Map<string, any>(); // userKey -> socket
 
 export function setupQueueSocket(io: Server) {
   io.on("connection", (socket) => {
-    console.log("Client connected");
-
     socket.on("join-queue", async ({ ticketId, userId }) => {
-      await joinQueue(ticketId, userId);
-      const key = `${ticketId}:${userId}`;
-      userSockets.set(key, socket);
+      try {
+        await joinQueue(ticketId, userId); // 이 부분에서 에러가 날 가능성
+        const key = `${ticketId}:${userId}`;
+        userSockets.set(key, socket);
+      } catch (err) {
+        console.error("Error in join-queue:", err, userId);
+        socket.emit("error", { message: "Something went wrong!" });
+      }
     });
 
     socket.on("disconnect", () => {
       for (const [key, s] of userSockets) {
         if (s.id === socket.id) {
           userSockets.delete(key);
-          console.log("User disconnected from queue");
           break;
         }
       }
