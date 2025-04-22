@@ -3,6 +3,7 @@ import { User, UserReq } from "./User";
 import { Ticket, TicketReq, TicketBody } from "./Ticket";
 import { Reserve } from "./Reserver";
 import { TicketSeat, SeatRow, SeatRowRequestBody } from "./TicketSeat";
+import { TicketRanking } from "./TicketRanking";
 export const db = {
   Sequelize: seq, // 그대로 유지
   sequelize,
@@ -10,6 +11,13 @@ export const db = {
   Ticket,
   Reserve,
   TicketSeat,
+  TicketRanking,
 };
+Reserve.belongsTo(TicketSeat, { foreignKey: "seatId" });
+Reserve.belongsTo(User, { foreignKey: "userId" });
+TicketSeat.belongsTo(Ticket, { foreignKey: "ticketId" });
+TicketSeat.hasMany(Reserve, { foreignKey: "seatId" });
+Ticket.hasMany(TicketSeat, { foreignKey: "ticketId", as: "ticketSeats" });
+TicketRanking.belongsTo(Ticket, { foreignKey: "ticketId", as: "ticket" });
 
 export { UserReq, TicketReq, SeatRow, SeatRowRequestBody, TicketBody };

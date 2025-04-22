@@ -97,7 +97,7 @@ function login(req, res) {
                 id: data.id,
                 name: data.name,
             });
-            res.status(200).send({
+            return res.status(200).send({
                 accessToken: accessToken,
                 refreshToken: refreshToken,
             });
@@ -123,7 +123,7 @@ function deleteUser(req, res) {
                 throw new Error(err);
             });
             if (userUpdateData[0] == 0)
-                return res.send("id or password is wrong");
+                throw new Error("user not found");
             else {
                 yield transaction.commit();
                 return res.send("success");
@@ -136,9 +136,9 @@ function deleteUser(req, res) {
     });
 }
 function checkJwt(req, res) {
-    var _a;
+    var _a, _b;
     const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-    const name = req.body.name;
+    const name = (_b = req.user) === null || _b === void 0 ? void 0 : _b.name;
     if (Boolean(id) && Boolean(name)) {
         const Obj = {
             id: id,

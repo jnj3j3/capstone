@@ -3,6 +3,7 @@ import { authMiddleware } from "../utils/authToken";
 import {
   reserveTicket,
   cancelReserve,
+  getReserveList,
 } from "../controllers/reserve/reserveController";
 var router = express.Router();
 router.post("/reserve/reserveTicket/:ticketId", authMiddleware, reserveTicket);
@@ -11,4 +12,5 @@ router.delete(
   authMiddleware,
   cancelReserve
 );
+router.get("/reserve/getReserveList", authMiddleware, getReserveList);
 export const reserveRouter = router;

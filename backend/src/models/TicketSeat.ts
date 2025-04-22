@@ -54,7 +54,6 @@ TicketSeat.init(
     freezeTableName: true,
   }
 );
-
 export interface SeatRow {
   row: string;
   seats: number;

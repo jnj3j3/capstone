@@ -59,7 +59,7 @@ export function login(req: Request, res: Response) {
           name: data.name,
         });
 
-        res.status(200).send({
+        return res.status(200).send({
           accessToken: accessToken,
           refreshToken: refreshToken,
         });
@@ -83,7 +83,7 @@ export async function deleteUser(req: Request, res: Response) {
     ).catch((err) => {
       throw new Error(err);
     });
-    if (userUpdateData[0] == 0) return res.send("id or password is wrong");
+    if (userUpdateData[0] == 0) throw new Error("user not found");
     else {
       await transaction.commit();
       return res.send("success");
@@ -96,7 +96,7 @@ export async function deleteUser(req: Request, res: Response) {
 
 export function checkJwt(req: Request, res: Response) {
   const id = (req as any).user?.id;
-  const name = req.body.name;
+  const name = (req as any).user?.name;
   if (Boolean(id) && Boolean(name)) {
     const Obj = {
       id: id,

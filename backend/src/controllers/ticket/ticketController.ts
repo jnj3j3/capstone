@@ -20,6 +20,10 @@ export async function createTicket(req: Request, res: Response) {
       name: body.name,
       context: body.context,
       image: req.file?.buffer,
+      startDate: body.startDate,
+      endDate: body.endDate,
+      when: body.when,
+      price: body.price,
     };
     const createdTicket = await Ticket.create(ticket, { transaction }).catch(
       (err) => {
@@ -43,7 +47,7 @@ export async function createTicket(req: Request, res: Response) {
       }
     }
     await transaction.commit();
-    res.send("success");
+    return res.send("success");
   } catch (err) {
     await transaction.rollback();
     return errConfig(res, err, "this error occured while createTicket");
@@ -61,9 +65,7 @@ export async function deleteTicket(req: Request, res: Response) {
       lock: transaction.LOCK.UPDATE,
       transaction: transaction,
     });
-    if (!ticket) {
-      return res.send("Ticket not found");
-    }
+    if (!ticket) throw new Error("Ticket not found");
     Ticket.destroy({
       where: {
         id: ticketId,
@@ -97,18 +99,52 @@ export function getTicket(req: Request, res: Response) {
       return errConfig(res, err, "this error occured while getTicket");
     });
 }
+export function getTicketWtihSeats(req: Request, res: Response) {
+  const ticketId = req.params.ticketId;
+  Ticket.findOne({
+    where: {
+      id: ticketId,
+    },
+    include: [
+      {
+        model: db.TicketSeat,
+        as: "ticketSeats",
+        include: [
+          {
+            model: db.Reserve,
+          },
+        ],
+      },
+    ],
+  })
+    .then((data) => {
+      if (data) {
+        return res.send(data.dataValues);
+      } else {
+        return res.send("Ticket not found");
+      }
+    })
+    .catch((err) => {
+      return errConfig(res, err, "this error occured while getTicket");
+    });
+}
 
 export function pageNationg(req: Request, res: Response) {
   try {
     const page = parseInt(req.params.page);
     const limit = parseInt(req.params.limit);
     const offset = (page - 1) * limit;
-    const searchQuery = req.body.searchQuery;
+    const searchQuery = req.query.searchQuery;
     if (searchQuery == " " || searchQuery == undefined) {
       Ticket.findAndCountAll({
         limit: limit,
         offset: offset,
         order: [["created", "DESC"]],
+        where: {
+          endDate: {
+            [seq.Op.gte]: new Date(),
+          },
+        },
       })
         .then((data) => {
           if (data.count == 0) {
@@ -124,9 +160,18 @@ export function pageNationg(req: Request, res: Response) {
         });
     } else {
       Ticket.findAndCountAll({
-        where: seq.Sequelize.literal(
-          `MATCH(name, content) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`
-        ),
+        where: {
+          [seq.Op.and]: [
+            seq.Sequelize.literal(
+              `MATCH(name, context) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`
+            ),
+            {
+              endDate: {
+                [seq.Op.gte]: new Date(),
+              },
+            },
+          ],
+        },
         //여기서 with query expansion으로 어느정도의 자연어 처리를 해주지만 허점이 많음음
         limit: limit,
         offset: offset,

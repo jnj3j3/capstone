@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTicket = createTicket;
 exports.deleteTicket = deleteTicket;
 exports.getTicket = getTicket;
+exports.getTicketWtihSeats = getTicketWtihSeats;
 exports.pageNationg = pageNationg;
 const index_1 = require("../../models/index");
 const err_config_1 = require("../../config/err.config");
@@ -30,6 +31,10 @@ function createTicket(req, res) {
                 name: body.name,
                 context: body.context,
                 image: (_b = req.file) === null || _b === void 0 ? void 0 : _b.buffer,
+                startDate: body.startDate,
+                endDate: body.endDate,
+                when: body.when,
+                price: body.price,
             };
             const createdTicket = yield Ticket.create(ticket, { transaction }).catch((err) => {
                 throw new Error(err);
@@ -45,7 +50,7 @@ function createTicket(req, res) {
                 }
             }
             yield transaction.commit();
-            res.send("success");
+            return res.send("success");
         }
         catch (err) {
             yield transaction.rollback();
@@ -66,9 +71,8 @@ function deleteTicket(req, res) {
                 lock: transaction.LOCK.UPDATE,
                 transaction: transaction,
             });
-            if (!ticket) {
-                return res.send("Ticket not found");
-            }
+            if (!ticket)
+                throw new Error("Ticket not found");
             Ticket.destroy({
                 where: {
                     id: ticketId,
@@ -104,17 +108,52 @@ function getTicket(req, res) {
         return (0, err_config_1.errConfig)(res, err, "this error occured while getTicket");
     });
 }
+function getTicketWtihSeats(req, res) {
+    const ticketId = req.params.ticketId;
+    Ticket.findOne({
+        where: {
+            id: ticketId,
+        },
+        include: [
+            {
+                model: index_1.db.TicketSeat,
+                as: "ticketSeats",
+                include: [
+                    {
+                        model: index_1.db.Reserve,
+                    },
+                ],
+            },
+        ],
+    })
+        .then((data) => {
+        if (data) {
+            return res.send(data.dataValues);
+        }
+        else {
+            return res.send("Ticket not found");
+        }
+    })
+        .catch((err) => {
+        return (0, err_config_1.errConfig)(res, err, "this error occured while getTicket");
+    });
+}
 function pageNationg(req, res) {
     try {
         const page = parseInt(req.params.page);
         const limit = parseInt(req.params.limit);
         const offset = (page - 1) * limit;
-        const searchQuery = req.body.searchQuery;
+        const searchQuery = req.query.searchQuery;
         if (searchQuery == " " || searchQuery == undefined) {
             Ticket.findAndCountAll({
                 limit: limit,
                 offset: offset,
                 order: [["created", "DESC"]],
+                where: {
+                    endDate: {
+                        [db_config_1.seq.Op.gte]: new Date(),
+                    },
+                },
             })
                 .then((data) => {
                 if (data.count == 0) {
@@ -131,7 +170,16 @@ function pageNationg(req, res) {
         }
         else {
             Ticket.findAndCountAll({
-                where: db_config_1.seq.Sequelize.literal(`MATCH(name, content) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`),
+                where: {
+                    [db_config_1.seq.Op.and]: [
+                        db_config_1.seq.Sequelize.literal(`MATCH(name, context) AGAINST('${searchQuery}' WITH QUERY EXPANSION)`),
+                        {
+                            endDate: {
+                                [db_config_1.seq.Op.gte]: new Date(),
+                            },
+                        },
+                    ],
+                },
                 //여기서 with query expansion으로 어느정도의 자연어 처리를 해주지만 허점이 많음음
                 limit: limit,
                 offset: offset,

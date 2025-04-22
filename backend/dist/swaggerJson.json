@@ -51,6 +51,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
@@ -81,6 +84,26 @@
         }
       }
     },
+    "/reserve/getReserveList": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/test/test1": {
       "get": {
         "description": "",
@@ -90,6 +113,16 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/ranking/getRanking": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -115,6 +148,18 @@
                 "context": {
                   "example": "any"
                 },
+                "startDate": {
+                  "example": "any"
+                },
+                "endDate": {
+                  "example": "any"
+                },
+                "when": {
+                  "example": "any"
+                },
+                "price": {
+                  "example": "any"
+                },
                 "seatRows": {
                   "example": "any"
                 }
@@ -128,6 +173,24 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/ticket/ticketSeat/{ticketId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "ticketId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -146,6 +209,11 @@
             "name": "limit",
             "in": "path",
             "required": true,
+            "type": "string"
+          },
+          {
+            "name": "searchQuery",
+            "in": "query",
             "type": "string"
           }
         ],

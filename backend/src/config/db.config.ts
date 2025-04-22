@@ -1,4 +1,5 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
 export const HOST = process.env.DB_HOST;
 export const USER = process.env.MYSQLDB_USER;

@@ -23,10 +23,10 @@ const express_1 = __importDefault(require("express"));
 var router = express_1.default.Router();
 router.get("/test/test1", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return res.send("ok");
+        res.send("ok");
     }
     catch (err) {
-        return res.status(500).send({
+        res.status(500).send({
             message: err || "Some error occured.",
         });
     }

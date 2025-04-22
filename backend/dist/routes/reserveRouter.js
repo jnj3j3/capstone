@@ -10,5 +10,6 @@ const reserveController_1 = require("../controllers/reserve/reserveController");
 var router = express_1.default.Router();
 router.post("/reserve/reserveTicket/:ticketId", authToken_1.authMiddleware, reserveController_1.reserveTicket);
 router.delete("/reserve/cancelReserve/:reserveId", authToken_1.authMiddleware, reserveController_1.cancelReserve);
+router.get("/reserve/getReserveList", authToken_1.authMiddleware, reserveController_1.getReserveList);
 exports.reserveRouter = router;
 //# sourceMappingURL=reserveRouter.js.map

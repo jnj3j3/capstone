@@ -6,6 +6,7 @@ import {
   pageNationg,
   deleteTicket,
   getTicket,
+  getTicketWtihSeats,
 } from "../controllers/ticket/ticketController";
 var router = express.Router();
 router.post(
@@ -14,7 +15,8 @@ router.post(
   authMiddleware,
   createTicket
 );
-router.get("/ticket/pageNationg/:page/:limit", uploadMiddleware, pageNationg);
+router.get("/ticket/ticketSeat/:ticketId", getTicketWtihSeats);
+router.get("/ticket/pageNationg/:page/:limit", pageNationg);
 router.delete("/ticket/deleteTicket/:ticketId", authMiddleware, deleteTicket);
-router.get("/ticket/getTicket/:ticketId", uploadMiddleware, getTicket);
+router.get("/ticket/getTicket/:ticketId", getTicket);
 export const ticketRouter = router;
