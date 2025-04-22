@@ -22,7 +22,7 @@ if (isNaN(port)) {
 }
 const client = (0, redis_1.createClient)({
     socket: {
-        host: process.env.REDIS_HOST || "localhost",
+        host: "redis",
         port: port,
         reconnectStrategy: (retries) => {
             console.error(`Redis reconnect attempt #${retries}`);
