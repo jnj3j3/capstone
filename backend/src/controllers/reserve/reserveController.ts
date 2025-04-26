@@ -10,16 +10,12 @@ export async function reserveTicket(req: Request, res: Response) {
   const transaction = await db.sequelize.transaction();
   try {
     const ticketId = req.params.ticketId;
-    const seatNumber = req.body.seatNumber;
+    const seatNumber: string[] = req.body.seatNumber;
+    if (seatNumber.length > 3) throw new Error("overed max seat number");
     const userId = (req as any).user?.id.toString();
-    console.log(typeof ticketId, typeof userId);
     const rank = await getQueueRank(ticketId, userId);
 
-    if (rank == null || rank >= 10) {
-      return res
-        .status(403)
-        .json({ allowed: false, message: "Still in queue" });
-    }
+    if (rank == null || rank >= 10) throw new Error("still in queue");
     const ticketSeat = await findTicketSeatForUpdate(
       parseInt(ticketId),
       seatNumber,
@@ -28,12 +24,16 @@ export async function reserveTicket(req: Request, res: Response) {
     // 결제시스템이 없음으로 reserve의 state를 바로 reserved로 바꿔주었다.
     // 이후 결제 시스템을 넣고 싶으면 reserve테이블에서 state의 deafult값을 pending으로 두고
     // 결제시스템에서 결제가 완료되면 reserved로 바꿔주는 로직을 추가해야할듯
-    const reserve = await db.Reserve.create(
-      {
-        userId: userId,
-        seatId: ticketSeat.id,
-      },
-      { transaction }
+    await Promise.all(
+      ticketSeat.map((seat) =>
+        db.Reserve.create(
+          {
+            userId: userId,
+            seatId: seat,
+          },
+          { transaction }
+        )
+      )
     );
     await transaction.commit();
     return res
