@@ -106,6 +106,7 @@ function getReserveList(req, res) {
                             {
                                 model: index_1.db.Ticket,
                                 attributes: [
+                                    "id",
                                     "name",
                                     "startDate",
                                     "endDate",

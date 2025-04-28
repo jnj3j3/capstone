@@ -109,6 +109,7 @@ export async function getReserveList(req: Request, res: Response) {
             {
               model: db.Ticket,
               attributes: [
+                "id",
                 "name",
                 "startDate",
                 "endDate",
