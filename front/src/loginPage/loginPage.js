@@ -1,7 +1,7 @@
 import React from "react";
-import MyCard from "./component/myCard";
+import { Login } from "./component/login";
 function MyPage() {
-  return <MyCard />;
+  return <Login />;
 }
 
 export default MyPage;

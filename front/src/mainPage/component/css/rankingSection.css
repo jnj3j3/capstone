@@ -59,6 +59,11 @@
   font-size: 13px;
   text-align: left;
 }
+.rank-title {
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+}
 
 .ranking-card img {
   width: 100%;
@@ -107,4 +112,9 @@
 .period-filter button.active {
   opacity: 1;
   font-weight: bold;
+}
+
+.custom-swiper-slide.loading {
+  display: grid;
+  place-items: center;
 }

@@ -1,9 +1,13 @@
 class Ticket {
-  constructor(name, img, price, time) {
+  constructor(id, name, seat, img, startAt, endAt, price, when) {
+    this.id = id;
     this.name = name;
-    this.img = img; // 이미지 경로
-    this.price = price; // 가격
-    this.time = time; // 공연 시간
+    this.seat = seat;
+    this.img = img;
+    this.price = price;
+    this.when = when;
+    this.startAt = startAt;
+    this.endAt = endAt;
   }
 }
 

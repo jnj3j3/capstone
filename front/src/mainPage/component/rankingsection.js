@@ -1,20 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./css/rankingSection.css";
-import Ticket from "../../public/class/ticketClass";
-import img from "../../public/images/image.png";
-const periods = ["일간", "주간", "월간", "연간"];
-
-const ticketList = [
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-  new Ticket("알라딘", img, "1,670,000", "2025-03-16 ~ 2025-03-25"),
-];
+import axios from "axios";
+import { Buffer } from "buffer";
+// const periods = ["일간", "주간", "월간", "연간"];
+import { useNavigate } from "react-router-dom";
 const RankingSection = () => {
-  const [selectedCategory, setSelectedCategory] = useState("뮤지컬");
-  const [selectedPeriod, setSelectedPeriod] = useState("일간");
+  // const [selectedCategory, setSelectedCategory] = useState("뮤지컬");
+  // const [selectedPeriod, setSelectedPeriod] = useState("일간");
+  const [ticketList, setTicketList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const res = await axios.get(
+          "http://100.106.99.20:3000/ranking/getRanking"
+        );
+        const modified = res.data.map((item) => {
+          const imageBuffer = item.ticket.image?.data;
+          let imageSrc = "";
+          if (imageBuffer) {
+            const base64Image = Buffer.from(imageBuffer).toString("base64");
+            imageSrc = `data:image/jpeg;base64,${base64Image}`;
+          }
+          const startDt = new Date(item.ticket.startDate);
+          const endDt = new Date(item.ticket.endDate);
+          const startDate = startDt.toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+          });
+          const endDate = endDt.toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+          });
+          return {
+            ...item,
+            ticket: {
+              ...item.ticket,
+              image: imageSrc,
+              startDate: startDate,
+              endDate: endDate,
+            },
+          };
+        });
 
+        setTicketList(modified);
+      } catch (err) {
+        console.error("Failed to load tickets", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTickets();
+  }, []);
   return (
     <div className="ranking-section">
       <div className="ranking-header">
@@ -22,19 +59,31 @@ const RankingSection = () => {
       </div>
       {/* 랭킹 슬라이더 */}
       <div className="ranking-slider">
-        {ticketList.map((show, idx) => (
+        {loading ? (
           <div className="ranking-card">
-            <div className="image-container">
-              <img src={show.img} alt={show.name} />
-              <span className="rank-number">{idx + 1}</span>
-            </div>
-            <h3 className="rank-explain">{show.name}</h3>
-            <p className="rank-explain">{show.time}</p>
+            <div className="spinner-border text-dark" role="status"></div>
           </div>
-        ))}
+        ) : (
+          ticketList.map((show, idx) => (
+            <div
+              className="ranking-card"
+              key={idx}
+              onClick={() => navigate(`/ticket/${show.ticketId}`)}
+            >
+              <div className="image-container">
+                <img src={show.ticket.image} alt={show.ticket.name} />
+                <span className="rank-number">{idx + 1}</span>
+              </div>
+              <h3 className="rank-title">{show.ticket.name}</h3>
+              <p className="rank-explain">
+                {show.ticket.startDate} ~ {show.ticket.endDate}
+              </p>
+            </div>
+          ))
+        )}
       </div>
 
-      {/* 기간 필터 */}
+      {/* 기간 필터
       <div className="period-filter">
         {periods.map((period) => (
           <button
@@ -45,7 +94,7 @@ const RankingSection = () => {
             {period}
           </button>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
