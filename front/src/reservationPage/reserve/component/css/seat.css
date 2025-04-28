@@ -1,103 +1,197 @@
-.seat-container {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-}
-
-.seat-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-left: 5%;
-  margin-right: 5%;
-}
-
-.seat-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-
-.row-label {
-  width: 20px;
-  font-weight: bold;
-}
-
-.seat {
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.seat.selected {
-  background-color: blue;
-  color: white;
-}
-
-.seat.reserved {
-  background-color: gray;
-  color: white;
-  cursor: not-allowed;
-}
-
-.seat-info {
-  width: 200px;
-  border: 1px solid #ccc;
-  padding: 10px;
-}
-
-.confirm-button {
-  width: 100%;
-  padding: 10px;
-  background-color: red;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.confirm-button:disabled {
-  background-color: lightgray;
-  cursor: not-allowed;
-}
+/* 기본 구조 */
 .seatMain {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 80px; /* reservationBanner와 seatBody 간 간격 조정 */
+  padding-top: 220px;
   padding-bottom: 300px;
   position: relative;
-  border-bottom-width: thin;
+  box-sizing: border-box;
 }
 
-.row.seatBody {
-  width: 80%;
-}
-
-.seat.reserved.screen {
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
+/* 예약 배너 */
 .reservationBanner {
   position: absolute;
-  top: 10px; /* 원하는 위치로 조정 */
+  top: 120px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: white;
-  padding: 10px 20px;
-  font-size: 20px;
+  background-color: #fff;
+  padding: 15px 30px;
+  font-size: 28px;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-.seat-width {
+
+/* 티켓 카드 */
+.seatTicket {
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
+}
+
+.ticketCard {
   width: 100%;
+  max-width: 300px;
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.ticketCard img {
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+/* 전체 컨테이너 */
+.seatBody {
+  display: flex;
+  width: 100%;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* 좌석 컨테이너 */
+.seat-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px;
+  gap: 40px;
+  width: 100%;
+}
+
+/* 좌석 레이아웃 */
+.seat-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* 좌석 줄 */
+.seat-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 줄 레이블 */
+.row-label {
+  width: 20px;
+  font-weight: bold;
+}
+
+/* 좌석 버튼 */
+.seat {
+  width: 45px;
+  height: 45px;
+  background-color: #e0e0e0;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.seat:hover:not(.reserved):not(.screen) {
+  background-color: #c2dbff;
+}
+
+.seat.selected {
+  background-color: #4a90e2;
+  color: white;
+}
+
+.seat.reserved {
+  background-color: #bbb;
+  color: white;
+  cursor: not-allowed;
+}
+
+.seat.screen {
+  width: 100%;
+  max-width: 500px;
+  background-color: #333;
+  color: white;
+  font-size: 18px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+/* 좌석 정보 */
+.seat-info {
+  width: 300px;
+  max-width: 400px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  height: fit-content;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.seat-info h3 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  text-align: center;
+}
+
+.seat-info ul {
+  padding: 0;
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.seat-info li {
+  margin-bottom: 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* 확인 버튼 */
+.confirm-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.confirm-button:hover:not(:disabled) {
+  background-color: #ff7875;
+}
+
+.confirm-button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+
+/* col 스타일 */
+.row {
+  width: 100%;
+  display: flex;
+}
+
+.col-3 {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.col-7 {
+  display: flex;
+  justify-content: flex-start;
 }

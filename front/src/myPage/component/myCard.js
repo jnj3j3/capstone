@@ -15,6 +15,7 @@ import { useAuth } from "../../public/function/authContext";
 const MyCard = () => {
   const navigate = useNavigate();
   const userName = localStorage.getItem("name");
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
   const [ticketList, setTicketList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { setIsLoggedIn } = useAuth();
@@ -44,8 +45,6 @@ const MyCard = () => {
         icon: "success",
         title: "Success",
         text: "Ticket canceled successfully.",
-      }).then(() => {
-        window.location.href = "/myPage";
       });
     } else {
       Swal.fire({
@@ -57,8 +56,6 @@ const MyCard = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      const userName = localStorage.getItem("name");
-      const isLoggedIn = localStorage.getItem("isLoggedIn");
       if (!userName || isLoggedIn == "false") {
         localStorage.removeItem("name");
         localStorage.setItem("isLoggedIn", "false");
@@ -82,6 +79,7 @@ const MyCard = () => {
             },
           })
         );
+
         if (!response || !response.data) {
           navigate("/login");
           return;
@@ -107,7 +105,7 @@ const MyCard = () => {
             timeZone: "Asia/Seoul",
           });
           return new Ticket(
-            ticket.id,
+            ticket.TicketSeat.Ticket.id,
             ticket.TicketSeat.Ticket.name,
             ticket.TicketSeat.seatNumber,
             img,
@@ -162,16 +160,13 @@ const MyCard = () => {
                 className="mySwiper ticketWallet"
               >
                 {ticketList.map((ticket, idx) => (
-                  <SwiperSlide
-                    className="swiperSlider ticketWallet"
-                    key={idx}
-                    onClick={() => navigate(`/ticket/${ticket.id}`)}
-                  >
+                  <SwiperSlide className="swiperSlider ticketWallet" key={idx}>
                     <div className="card ticketCard">
                       <img
                         src={ticket.img}
                         className="card-img-top"
                         alt="..."
+                        onClick={() => navigate(`/ticket/${ticket.id}`)}
                       />
                       <div className="card-body ticketCardBody">
                         <h3 className="card-title">{ticket.name}</h3>
@@ -180,7 +175,9 @@ const MyCard = () => {
                           seatNumber :{" "}
                           <span className="seatHighlight">{ticket.seat}</span>
                         </div>
-                        <div className="walletInfo">{ticket.price}원</div>
+                        <div className="walletInfo">
+                          {ticket.price.toLocaleString()}원
+                        </div>
                         <button
                           type="button"
                           className="btn btn-danger btn-sm"

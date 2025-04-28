@@ -67,6 +67,7 @@ const SearchCard = () => {
             img: `data:image/jpeg;base64,${arrayBufferToBase64(
               item.image.data
             )}`,
+            price: item.price.toLocaleString(),
           }))
         );
       } catch (err) {
@@ -98,7 +99,7 @@ const SearchCard = () => {
                     <div className="card-body">
                       <h5 className="card-title">{ticket.name}</h5>
                       <p className="card-text">{ticket.time}</p>
-                      <p className="card-text">{ticket.price}</p>
+                      <p className="card-text">{ticket.price}원</p>
                     </div>
                   </div>
                 </div>

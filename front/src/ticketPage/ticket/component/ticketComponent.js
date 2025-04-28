@@ -63,7 +63,7 @@ function TicketDetailPage() {
                   공연시간
                 </th>
                 <td>
-                  {new Date(ticket.when).toLocaleDateString("ko-KR", {
+                  {new Date(ticket.when).toLocaleString("ko-KR", {
                     timeZone: "Asia/Seoul",
                   })}
                 </td>
@@ -71,11 +71,11 @@ function TicketDetailPage() {
               <tr>
                 <th scope="row">예메기간</th>
                 <td>
-                  {new Date(ticket.startDate).toLocaleDateString("ko-KR", {
+                  {new Date(ticket.startDate).toLocaleString("ko-KR", {
                     timeZone: "Asia/Seoul",
                   })}{" "}
                   ~{" "}
-                  {new Date(ticket.endDate).toLocaleDateString("ko-KR", {
+                  {new Date(ticket.endDate).toLocaleString("ko-KR", {
                     timeZone: "Asia/Seoul",
                   })}
                 </td>
