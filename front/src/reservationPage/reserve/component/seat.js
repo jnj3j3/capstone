@@ -4,18 +4,17 @@ import "./css/seat.css";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { fetchWithAutoRefresh } from "../../../public/function/tokenFun";
-const Seat = () => {
+const Seat = ({ ticketId }) => {
   const navigate = useNavigate();
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [ticket, setTicket] = useState(null);
   const [reservedSeats, setReservedSeats] = useState(new Set());
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     async function fetchTicket() {
       try {
         const res = await axios.get(
-          "http://100.106.99.20:3000/ticket/ticketSeat/16"
+          `http://100.106.99.20:3000/ticket/ticketSeat/${ticketId}`
         );
         const data = res.data;
         if (data.image && data.image.data) {
@@ -70,7 +69,6 @@ const Seat = () => {
     });
   };
   const handleConfirm = async () => {
-    console.log("aaaaaaaaaaaaaaaaa");
     if (selectedSeats.length === 0) return;
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
@@ -85,7 +83,7 @@ const Seat = () => {
     try {
       const res = await fetchWithAutoRefresh(() =>
         axios.post(
-          "http://100.106.99.20:3000/reserve/reserveTicket/16",
+          `http://100.106.99.20:3000/reserve/reserveTicket/${ticketId}`,
           { seatNumber: selectedSeats },
           {
             headers: {
@@ -119,7 +117,7 @@ const Seat = () => {
     return <div className="text-center mt-5">Loading...</div>;
   }
 
-  if (!ticket) {
+  if (ticket == null) {
     return (
       <div className="text-center mt-5">티켓 정보를 불러오지 못했습니다.</div>
     );

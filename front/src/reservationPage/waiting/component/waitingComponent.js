@@ -9,7 +9,7 @@ function QueueStatus({ ticketId }) {
   const userId = localStorage.getItem("name");
   const isLoggedIn = localStorage.getItem("isLoggedIn");
   useEffect(() => {
-    if (!userId || !isLoggedIn) {
+    if (!userId || isLoggedIn == "false") {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -26,7 +26,7 @@ function QueueStatus({ ticketId }) {
       setRank(data.rank);
 
       if (data.rank > 0 && data.rank <= 10) {
-        navigate("/reserve");
+        navigate(`/reservation`, { state: { ticketId } });
       }
     });
 
@@ -39,11 +39,27 @@ function QueueStatus({ ticketId }) {
     };
   }, [ticketId, userId, navigate]);
 
-  if (rank === null) return <div>대기열에 참여 중...</div>;
-  if (rank === -1) return <div>대기열에서 나갔습니다.</div>;
+  if (rank === null)
+    return (
+      <div
+        className="container mt-5 w-100 d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        대기열에 참여 중...
+      </div>
+    );
+  if (rank === -1)
+    return (
+      <div
+        className="container mt-5 w-100 d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        대기열에서 나갔습니다.
+      </div>
+    );
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5 w-100">
       <div className="card text-center">
         <div className="card-body">
           <h2 className="card-title mb-4">대기 순위: {rank}</h2>

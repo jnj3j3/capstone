@@ -94,7 +94,7 @@ function TicketDetailPage() {
           <div className="d-grid gap-2 mt-4">
             <button
               className="btn btn-primary btn-lg"
-              onClick={() => navigate("/reservation")}
+              onClick={() => navigate(`/reserveWaiting/${id}`)}
             >
               예매하기
             </button>
