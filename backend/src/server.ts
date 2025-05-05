@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express from "express";
+import express, { Request, Response } from "express";
 import http from "http";
 import cors from "cors";
 import { Server as IOServer } from "socket.io"; // 중요: 이름 충돌 피하기
@@ -13,6 +13,9 @@ import { userRouter } from "./routes/userRouter";
 import { ticketRouter } from "./routes/ticketRouter";
 import { reserveRouter } from "./routes/reserveRouter";
 import { ticketRankingRouter } from "./routes/ticketRankingRouter";
+import client from "prom-client";
+
+client.collectDefaultMetrics();
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swaggerJson");
 
@@ -23,7 +26,30 @@ const server = http.createServer(app);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const httpRequestCounter = new client.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status"],
+});
 
+app.get("/metrics", async (req: Request, res: Response) => {
+  try {
+    res.set("Content-Type", client.register.contentType);
+    res.end(await client.register.metrics());
+  } catch (ex) {
+    res.status(500).end((ex as Error).message);
+  }
+});
+app.use((req, res, next) => {
+  res.on("finish", () => {
+    httpRequestCounter.inc({
+      method: req.method,
+      route: req.route?.path || req.path,
+      status: res.statusCode,
+    });
+  });
+  next();
+});
 // socket.io 서버 연결
 const io = new IOServer(server, {
   cors: {

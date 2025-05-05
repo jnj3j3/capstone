@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,6 +25,8 @@ const userRouter_1 = require("./routes/userRouter");
 const ticketRouter_1 = require("./routes/ticketRouter");
 const reserveRouter_1 = require("./routes/reserveRouter");
 const ticketRankingRouter_1 = require("./routes/ticketRankingRouter");
+const prom_client_1 = __importDefault(require("prom-client"));
+prom_client_1.default.collectDefaultMetrics();
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swaggerJson");
 const app = (0, express_1.default)();
@@ -24,6 +35,31 @@ const server = http_1.default.createServer(app);
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+const httpRequestCounter = new prom_client_1.default.Counter({
+    name: "http_requests_total",
+    help: "Total number of HTTP requests",
+    labelNames: ["method", "route", "status"],
+});
+app.get("/metrics", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.set("Content-Type", prom_client_1.default.register.contentType);
+        res.end(yield prom_client_1.default.register.metrics());
+    }
+    catch (ex) {
+        res.status(500).end(ex.message);
+    }
+}));
+app.use((req, res, next) => {
+    res.on("finish", () => {
+        var _a;
+        httpRequestCounter.inc({
+            method: req.method,
+            route: ((_a = req.route) === null || _a === void 0 ? void 0 : _a.path) || req.path,
+            status: res.statusCode,
+        });
+    });
+    next();
+});
 // socket.io 서버 연결
 const io = new socket_io_1.Server(server, {
     cors: {

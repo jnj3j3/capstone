@@ -17,6 +17,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
   front:
     build:
       context: "./front"
@@ -25,6 +26,11 @@ services:
     env_file: ./.env
     ports:
       - $FRONT_DOCKER_PORT:$FRONT_LOCAL_PORT
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   back:
     container_name: back
     depends_on:
@@ -50,6 +56,7 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
   redis:
     image: "redis:latest"
     container_name: redis
@@ -62,12 +69,87 @@ services:
     env_file:
       - ./.env
     labels:
-      - "name-=redis"
+      - "name=redis"
       - "mode=standalone"
     command: redis-server /usr/local/etc/redis/redis.conf
     logging:
       options:
         max-size: "10m"
         max-file: "3"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - $PROMETHEUS_LOCAL_PORT:$PROMETHEUS_DOCKER_PORT
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - $GRAFANA_LOCAL_PORT:$GRAFANA_DOCKER_PORT
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    restart: always
+    ports:
+      - $REDIS_EXPORTER_LOCAL_PORT:$REDIS_EXPORTER_DOCKER_PORT
+    environment:
+      - REDIS_ADDR=redis:$REDIS_DOCKER_PORT
+    depends_on:
+      - redis
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: always
+    ports:
+      - $NODE_EXPORTER_LOCAL_PORT:$NODE_EXPORTER_DOCKER_PORT
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--path.rootfs=/rootfs"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mysqld-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mysqld-exporter
+    ports:
+      - $MYSQLDB_EXPORTER_LOCAL_PORT:$MYSQLDB_EXPORTER_DOCKER_PORT
+    command:
+      - "--config.my-cnf=/etc/mysql/my.cnf"
+    volumes:
+      - ./exporter_my.cnf:/etc/mysql/my.cnf
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
 volumes:
   db:
+  grafana-storage:
