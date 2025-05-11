@@ -19,6 +19,10 @@ export default function CardSlider() {
         const response = await axios.get(
           "http://100.106.99.20:3000/ticket/pageNationg/1/5"
         );
+        if (response.data == "Ticket not found") {
+          setTicketList([]);
+          return;
+        }
         const modified = response.data.rows.map((item) => {
           const imageBuffer = item.image?.data;
           let imageSrc = "";

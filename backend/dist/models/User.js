@@ -20,9 +20,11 @@ User.init({
     },
     created: {
         type: db_config_1.seq.DATE,
+        defaultValue: db_config_1.seq.NOW,
     },
     state: {
         type: db_config_1.seq.INTEGER,
+        defaultValue: 1,
     },
 }, {
     modelName: "User",

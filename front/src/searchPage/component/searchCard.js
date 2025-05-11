@@ -54,7 +54,11 @@ const SearchCard = () => {
             },
           }
         );
-
+        if (res.data === "Ticket not found") {
+          setTicketList([]);
+          setTotalPages(1);
+          return;
+        }
         const { count, rows } = res.data;
         setTotalPages(Math.ceil(count / 6));
         setTicketList(
