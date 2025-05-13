@@ -11,6 +11,7 @@ export function CreateTicket() {
   const [imageFile, setImageFile] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [price, setPrice] = useState("");
   const [startDateTime, setStartDateTime] = useState(
     new Date().toISOString().slice(0, 16)
   );
@@ -20,6 +21,7 @@ export function CreateTicket() {
   const [when, setWhen] = useState("");
   const [seatRows, setSeatRows] = useState([{ row: "A", seats: 10 }]);
 
+  // Handle file input
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -37,7 +39,9 @@ export function CreateTicket() {
     }
   };
 
+  // Handle seat row management
   const getNextRowLabel = () => String.fromCharCode(65 + seatRows.length); // A, B, C...
+
   const handleSeatChange = (index, value) => {
     const updated = [...seatRows];
     updated[index].seats = parseInt(value) || 0;
@@ -56,6 +60,7 @@ export function CreateTicket() {
     setSeatRows(updated);
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -65,6 +70,7 @@ export function CreateTicket() {
     formData.append("startDate", startDateTime);
     formData.append("endDate", endDateTime);
     formData.append("when", when);
+    formData.append("price", price);
     formData.append("image", compressedImg);
     formData.append("seatRows", JSON.stringify(seatRows));
 
@@ -80,7 +86,7 @@ export function CreateTicket() {
         return;
       }
 
-      const response = await fetchWithAutoRefresh(() =>
+      await fetchWithAutoRefresh(() =>
         axios.post("http://100.106.99.20:3000/ticket/createTicket", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -139,6 +145,7 @@ export function CreateTicket() {
               rows={6}
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              required
             ></textarea>
           </div>
 
@@ -150,13 +157,29 @@ export function CreateTicket() {
             <input
               type="text"
               className="form-control"
-              placeholder="Enter ticket time description (e.g. Weekdays 8 PM)"
+              placeholder="Enter event date or time"
               value={when}
               onChange={(e) => setWhen(e.target.value)}
+              required
             />
           </div>
 
-          {/* Seat Input */}
+          {/* Price */}
+          <div className="input-group mb-3">
+            <span className="input-group-text bg-secondary text-white fw-semibold">
+              Price
+            </span>
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Enter ticket price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Seat Layout */}
           <div className="container mt-4" style={{ marginBottom: "20px" }}>
             <div className="row flex-nowrap">
               <span
@@ -192,28 +215,6 @@ export function CreateTicket() {
               </div>
             </div>
           </div>
-          {/* Seat Layout View */}
-          <div className="seat-layout mt-3">
-            <button className="seat reserved screen">screen</button>
-            <div className="mt-2">
-              {seatRows.map(({ row, seats }) => (
-                <div
-                  key={row}
-                  className="seat-row d-flex align-items-center mb-2"
-                >
-                  <span className="row-label me-2 fw-bold">{row}</span>
-                  {Array.from({ length: seats }, (_, col) => {
-                    const seatId = row - col + 1;
-                    return (
-                      <button key={seatId} className="seat mx-1">
-                        {col + 1}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* File Upload */}
           <div className="input-group mb-3">
@@ -229,7 +230,7 @@ export function CreateTicket() {
           </div>
 
           {/* StartAt */}
-          <div className="input-group mb-3">
+          <div className="input-group mb-3 ">
             <span className="input-group-text bg-secondary text-white fw-semibold">
               StartAt
             </span>
