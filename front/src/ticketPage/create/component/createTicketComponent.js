@@ -215,7 +215,28 @@ export function CreateTicket() {
               </div>
             </div>
           </div>
-
+          {/* Seat Layout View */}
+          <div className="seat-layout mt-3">
+            <button className="seat reserved screen">screen</button>
+            <div className="mt-2">
+              {seatRows.map(({ row, seats }) => (
+                <div
+                  key={row}
+                  className="seat-row d-flex align-items-center mb-2"
+                >
+                  <span className="row-label me-2 fw-bold">{row}</span>
+                  {Array.from({ length: seats }, (_, col) => {
+                    const seatId = row - col + 1;
+                    return (
+                      <button key={seatId} className="seat mx-1">
+                        {col + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
           {/* File Upload */}
           <div className="input-group mb-3">
             <span className="input-group-text bg-secondary text-white fw-semibold">
