@@ -64,7 +64,7 @@ export async function cancelReserve(req: Request, res: Response) {
       transaction: transaction,
     });
     if (!reserve) {
-      errConfig(res, null, "this reserveId is not exist");
+      return errConfig(res, null, "this reserveId is not exist");
     }
     await findTicketSeatForCancel(reserve.seatId, transaction).catch((err) => {
       throw new Error(err);

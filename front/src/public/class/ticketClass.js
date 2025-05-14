@@ -1,5 +1,6 @@
 class Ticket {
-  constructor(id, name, seat, img, startAt, endAt, price, when) {
+  constructor(reserveId, id, name, seat, img, startAt, endAt, price, when) {
+    this.reservationId = reserveId;
     this.id = id;
     this.name = name;
     this.seat = seat;

@@ -65,7 +65,7 @@ function cancelReserve(req, res) {
                 transaction: transaction,
             });
             if (!reserve) {
-                (0, err_config_1.errConfig)(res, null, "this reserveId is not exist");
+                return (0, err_config_1.errConfig)(res, null, "this reserveId is not exist");
             }
             yield (0, ticketSeatFunction_1.findTicketSeatForCancel)(reserve.seatId, transaction).catch((err) => {
                 throw new Error(err);

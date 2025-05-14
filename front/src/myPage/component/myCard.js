@@ -45,6 +45,8 @@ const MyCard = () => {
         icon: "success",
         title: "Success",
         text: "Ticket canceled successfully.",
+      }).then(() => {
+        window.location.reload();
       });
     } else {
       Swal.fire({
@@ -79,13 +81,14 @@ const MyCard = () => {
             },
           })
         );
-
+        console.log(response);
         if (!response || !response.data) {
           navigate("/login");
           return;
         }
 
         const ticketList = response.data.map((ticket) => {
+          console.log(ticket.id);
           const imageBuffer = ticket.TicketSeat.Ticket.image?.data;
           let img = "";
           if (imageBuffer) {
@@ -105,6 +108,7 @@ const MyCard = () => {
             timeZone: "Asia/Seoul",
           });
           return new Ticket(
+            ticket.id,
             ticket.TicketSeat.Ticket.id,
             ticket.TicketSeat.Ticket.name,
             ticket.TicketSeat.seatNumber,
@@ -181,7 +185,9 @@ const MyCard = () => {
                         <button
                           type="button"
                           className="btn btn-danger btn-sm"
-                          onClick={() => cancelReserveHandler(ticket.id)}
+                          onClick={() =>
+                            cancelReserveHandler(ticket.reservationId)
+                          }
                         >
                           Cancel Ticket
                         </button>
