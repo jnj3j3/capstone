@@ -32,9 +32,11 @@ User.init(
     },
     created: {
       type: seq.DATE,
+      defaultValue: seq.NOW,
     },
     state: {
       type: seq.INTEGER,
+      defaultValue: 1,
     },
   },
   {
