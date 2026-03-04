@@ -20,12 +20,14 @@ const cors_1 = __importDefault(require("cors"));
 const socket_io_1 = require("socket.io"); // 중요: 이름 충돌 피하기
 const websocket_1 = require("./utils/websocket");
 const rankingCron_1 = require("./cron/rankingCron");
+const redis_adapter_1 = require("@socket.io/redis-adapter");
 const models_1 = require("./models");
 const userRouter_1 = require("./routes/userRouter");
 const ticketRouter_1 = require("./routes/ticketRouter");
 const reserveRouter_1 = require("./routes/reserveRouter");
 const ticketRankingRouter_1 = require("./routes/ticketRankingRouter");
 const prom_client_1 = __importDefault(require("prom-client"));
+const redis_1 = require("./utils/redis/redis");
 prom_client_1.default.collectDefaultMetrics();
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swaggerJson");
@@ -61,12 +63,49 @@ app.use((req, res, next) => {
     next();
 });
 // socket.io 서버 연결
-const io = new socket_io_1.Server(server, {
-    cors: {
-        origin: "*",
-    },
+const setupSocket = (httpServer) => __awaiter(void 0, void 0, void 0, function* () {
+    const io = new socket_io_1.Server(httpServer, {
+        httpCompression: false,
+        perMessageDeflate: false,
+        cors: {
+            origin: "*",
+        },
+        transports: ["websocket"],
+        pingTimeout: 60000,
+        pingInterval: 25000,
+    });
+    const mainClient = yield (0, redis_1.redisClient)();
+    const pubClient = mainClient.duplicate();
+    const subClient = mainClient.duplicate();
+    yield Promise.all([pubClient.connect(), subClient.connect()]);
+    io.adapter((0, redis_adapter_1.createAdapter)(pubClient, subClient));
+    return io;
 });
-(0, websocket_1.setupQueueSocket)(io);
+// const io = new IOServer(server, {
+//   httpCompression: false,
+//   perMessageDeflate: false,
+//   cors: {
+//     origin: "*",
+//   },
+//   transports: ["websocket"],
+//   pingTimeout: 60000,
+//   pingInterval: 25000,
+// });
+const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const io = yield setupSocket(server);
+        (0, websocket_1.setupQueueSocket)(io);
+        const PORT = process.env.NODE_DOCKER_PORT || 3000;
+        server.listen(PORT, () => {
+            console.log(`Server is running at http://localhost:${PORT}`);
+        });
+    }
+    catch (err) {
+        console.error("Error setting up Socket.IO:", err);
+        process.exit(1);
+    }
+});
+startServer();
 // Sequelize DB 연결
 models_1.db.sequelize
     .sync()
@@ -84,8 +123,4 @@ app.use("", ticketRankingRouter_1.ticketRankingRouter);
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 (0, rankingCron_1.startRankingCronJob)();
 // HTTP + WebSocket 서버 리스닝
-const PORT = process.env.NODE_DOCKER_PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
 //# sourceMappingURL=server.js.map

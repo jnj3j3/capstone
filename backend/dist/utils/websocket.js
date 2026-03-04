@@ -34,7 +34,7 @@ function setupQueueSocket(io) {
                                 socket.emit("queue-update", { rank });
                             }
                         }
-                    }), 3000);
+                    }), 10000);
                     // 해당 ticketId에 대한 setInterval 타이머 저장
                     queueTimers.set(ticketId, timer);
                 }

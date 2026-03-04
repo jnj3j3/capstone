@@ -22,3 +22,6 @@ scrape_configs:
   - job_name: "mysql"
     static_configs:
       - targets: ["mysqld-exporter:9104"]
+
+#remote_write:
+ # - url: "http://100.106.99.20:9090/api/v1/write"

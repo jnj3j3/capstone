@@ -1,7 +1,7 @@
 FROM node:current
-
-WORKDIR /dist
+RUN npm install -g pm2
+WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-CMD npm run start
+CMD ["pm2-runtime", "start", "./dist/server.js", "-i", "max"]
