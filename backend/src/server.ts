@@ -7,7 +7,7 @@ import cors from "cors";
 import { Server as IOServer } from "socket.io"; // 중요: 이름 충돌 피하기
 import { setupQueueSocket } from "./utils/websocket";
 import { startRankingCronJob } from "./cron/rankingCron";
-import { createAdapter } from "@socket.io/redis-adapter";
+// import { createAdapter } from "@socket.io/redis-adapter";
 import { db } from "./models";
 import { userRouter } from "./routes/userRouter";
 import { ticketRouter } from "./routes/ticketRouter";
@@ -63,11 +63,11 @@ const setupSocket = async (httpServer) => {
     pingTimeout: 60000,
     pingInterval: 25000,
   });
-  const mainClient = await redisClient();
-  const pubClient = mainClient.duplicate();
-  const subClient = mainClient.duplicate();
-  await Promise.all([pubClient.connect(), subClient.connect()]);
-  io.adapter(createAdapter(pubClient, subClient));
+  // const mainClient = await redisClient();
+  // const pubClient = mainClient.duplicate();
+  // const subClient = mainClient.duplicate();
+  // await Promise.all([pubClient.connect(), subClient.connect()]);
+  // io.adapter(createAdapter(pubClient, subClient));
   return io;
 };
 // const io = new IOServer(server, {

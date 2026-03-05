@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isUserAllowed = exports.getQueueRank = exports.joinQueue = void 0;
+exports.getZrange = exports.cleanupQueue = exports.isUserAllowed = exports.getQueueRank = exports.joinQueue = void 0;
 // queue.ts
 const redis_1 = require("./redis");
 const QUEUE_PREFIX = "ticket_queue:";
@@ -17,16 +17,17 @@ const joinQueue = (ticketId, userId) => __awaiter(void 0, void 0, void 0, functi
     const client = yield (0, redis_1.redisClient)();
     const queueKey = `ticket_queue:${ticketId}`;
     const now = Date.now();
-    const expirationTime = now - 10 * 60 * 1000;
-    const luaScript = `
-    redis.call('ZREMRANGEBYSCORE', KEYS[1], 0, ARGV[1])
-    redis.call('ZADD', KEYS[1], ARGV[2], ARGV[3])
-    return 1
-  `;
-    yield client.eval(luaScript, {
-        keys: [queueKey],
-        arguments: [expirationTime.toString(), now.toString(), userId],
-    });
+    // const expirationTime = now - 10 * 60 * 1000;
+    // const luaScript = `
+    //   redis.call('ZREMRANGEBYSCORE', KEYS[1], 0, ARGV[1])
+    //   redis.call('ZADD', KEYS[1], ARGV[2], ARGV[3])
+    //   return 1
+    // `;
+    // await client.eval(luaScript, {
+    //   keys: [queueKey],
+    //   arguments: [expirationTime.toString(), now.toString(), userId],
+    // });
+    yield client.zAdd(queueKey, { score: now, value: userId });
 });
 exports.joinQueue = joinQueue;
 const getQueueRank = (ticketId, userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,4 +41,17 @@ const isUserAllowed = (ticketId_1, userId_1, ...args_1) => __awaiter(void 0, [ti
     return rank > 0 && rank <= maxRank;
 });
 exports.isUserAllowed = isUserAllowed;
+const cleanupQueue = (ticketId) => __awaiter(void 0, void 0, void 0, function* () {
+    const client = yield (0, redis_1.redisClient)();
+    const queueKey = `ticket_queue:${ticketId}`;
+    const now = Date.now();
+    const expirationTime = now - 10 * 60 * 1000;
+    yield client.zRemRangeByScore(queueKey, 0, expirationTime.toString());
+});
+exports.cleanupQueue = cleanupQueue;
+const getZrange = (ticketId, start, stop) => __awaiter(void 0, void 0, void 0, function* () {
+    const client = yield (0, redis_1.redisClient)();
+    return yield client.zRange(`ticket_queue:${ticketId}`, start, stop);
+});
+exports.getZrange = getZrange;
 //# sourceMappingURL=redisUtils.js.map

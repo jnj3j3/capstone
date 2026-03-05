@@ -20,14 +20,13 @@ const cors_1 = __importDefault(require("cors"));
 const socket_io_1 = require("socket.io"); // 중요: 이름 충돌 피하기
 const websocket_1 = require("./utils/websocket");
 const rankingCron_1 = require("./cron/rankingCron");
-const redis_adapter_1 = require("@socket.io/redis-adapter");
+// import { createAdapter } from "@socket.io/redis-adapter";
 const models_1 = require("./models");
 const userRouter_1 = require("./routes/userRouter");
 const ticketRouter_1 = require("./routes/ticketRouter");
 const reserveRouter_1 = require("./routes/reserveRouter");
 const ticketRankingRouter_1 = require("./routes/ticketRankingRouter");
 const prom_client_1 = __importDefault(require("prom-client"));
-const redis_1 = require("./utils/redis/redis");
 prom_client_1.default.collectDefaultMetrics();
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swaggerJson");
@@ -74,11 +73,11 @@ const setupSocket = (httpServer) => __awaiter(void 0, void 0, void 0, function* 
         pingTimeout: 60000,
         pingInterval: 25000,
     });
-    const mainClient = yield (0, redis_1.redisClient)();
-    const pubClient = mainClient.duplicate();
-    const subClient = mainClient.duplicate();
-    yield Promise.all([pubClient.connect(), subClient.connect()]);
-    io.adapter((0, redis_adapter_1.createAdapter)(pubClient, subClient));
+    // const mainClient = await redisClient();
+    // const pubClient = mainClient.duplicate();
+    // const subClient = mainClient.duplicate();
+    // await Promise.all([pubClient.connect(), subClient.connect()]);
+    // io.adapter(createAdapter(pubClient, subClient));
     return io;
 });
 // const io = new IOServer(server, {

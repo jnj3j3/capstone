@@ -23,16 +23,37 @@ function setupQueueSocket(io) {
                 // ticketId에 대해 setInterval이 이미 실행 중이 아니라면 새로 시작
                 if (!queueTimers.has(ticketId)) {
                     const timer = setInterval(() => __awaiter(this, void 0, void 0, function* () {
-                        for (const [key, socket] of userSockets) {
-                            const [ticketId, userId] = key.split(":");
-                            const rank = yield (0, redisUtils_1.getQueueRank)(ticketId, userId);
-                            if (rank === -1) {
-                                socket.emit("queue-update", { rank: -1 });
-                                userSockets.delete(key);
+                        try {
+                            const hasActiveUsers = Array.from(userSockets.keys()).some((key) => key.startsWith(`${ticketId}:`));
+                            if (!hasActiveUsers) {
+                                console.log(`No active users for ticket ${ticketId}. Clearing queue and stopping timer.`);
+                                const existingTimer = queueTimers.get(ticketId);
+                                if (existingTimer) {
+                                    clearInterval(existingTimer);
+                                }
+                                queueTimers.delete(ticketId);
+                                return;
                             }
-                            else {
-                                socket.emit("queue-update", { rank });
+                            if (process.env.NODE_APP_INSTANCE === "0")
+                                yield (0, redisUtils_1.cleanupQueue)(ticketId);
+                            const activeUsers = yield (0, redisUtils_1.getZrange)(ticketId, 0, -1);
+                            const rankMap = new Map(activeUsers.map((userId, index) => [userId, index + 1]));
+                            for (const [key, socket] of userSockets) {
+                                const [tId, userId] = key.split(":");
+                                if (tId !== ticketId)
+                                    continue;
+                                const rank = rankMap.get(userId) || -1;
+                                if (rank === -1) {
+                                    socket.emit("queue-update", { rank: -1 });
+                                    userSockets.delete(key);
+                                }
+                                else {
+                                    socket.emit("queue-update", { rank });
+                                }
                             }
+                        }
+                        catch (err) {
+                            console.error("Error in queue update interval:", err);
                         }
                     }), 10000);
                     // 해당 ticketId에 대한 setInterval 타이머 저장

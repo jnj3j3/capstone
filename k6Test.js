@@ -9,8 +9,8 @@ import { check } from "k6";
 
 export const options = {
   stages: [
-    { duration: "1m", target: 9000 },
-    { duration: "2m", target: 9000 },
+    { duration: "1m", target: 11000 },
+    { duration: "2m", target: 11000 },
     { duration: "1m", target: 0 },
   ],
 };
